@@ -73,14 +73,14 @@ dashboard "ibm_compute_instance_detail" {
 
       }
 
-      # table {
-      #   title = "Tags"
-      #   width = 6
-      #   query = query.ibm_compute_instance_tags
-      #   args  = {
-      #     crn = self.input.instance_crn.value
-      #   }
-      # }
+      table {
+        title = "Tags"
+        width = 6
+        query = query.ibm_compute_instance_tags
+        args  = {
+          crn = self.input.instance_crn.value
+        }
+      }
     }
     container {
       width = 6
@@ -94,8 +94,8 @@ dashboard "ibm_compute_instance_detail" {
       }
 
       table {
-        title = "Volume"
-        query = query.ibm_compute_instance_volume
+        title = "Data Volume"
+        query = query.ibm_compute_instance_data_volume
         args  = {
           crn = self.input.instance_crn.value
         }
@@ -260,8 +260,8 @@ query "ibm_compute_instance_architecture" {
 query "ibm_compute_instance_image" {
   sql = <<-EOQ
     select
-      image ->> 'name' as "Name",
-      image ->> 'id' as "ID",
+      image ->> 'name' as "Image Name",
+      image ->> 'id' as "Image ID",
       image ->> 'href' as "HREF",
       image ->> 'crn' as "CRN"
     from
@@ -283,6 +283,7 @@ query "ibm_compute_instance_overview" {
       title as "Title",
       region as "Region",
       account_id as "Account ID",
+      href as "HREF",
       crn as "CRN"
     from
       ibm_is_instance
@@ -293,26 +294,6 @@ query "ibm_compute_instance_overview" {
   param "crn" {}
 }
 
-# query "ibm_compute_instance_tags" {
-#   sql = <<-EOQ
-#     with jsondata as (
-#       select
-#         tags::json as tags
-#       from
-#         ibm_is_instance
-#       where
-#         crn = 'crn:v1:bluemix:public:is:us-south-2:a/76aa4877fab6436db86f121f62faf221::instance:0727_4708987f-5fc9-4a33-8586-147a5e147ec9'
-#       )
-#     select
-#       key as "Key",
-#       value as "Value"
-#     from
-#       ibm_is_instance,
-#       json_array_elements_text(tags);
-#     EOQ
-
-#     param "crn" {}
-# }
 
 query "ibm_compute_instance_boot_volume" {
   sql = <<-EOQ
@@ -330,13 +311,13 @@ query "ibm_compute_instance_boot_volume" {
   param "crn" {}
 }
 
-query "ibm_compute_instance_volume" {
+query "ibm_compute_instance_data_volume" {
   sql = <<-EOQ
     select
-      a ->> 'name' as "Volume Attachment Name",
-      a ->> 'id'  as "Volume Attachment ID",
-      a -> 'volume' ->> 'name' as "Volume Name",
-      a -> 'volume' ->> 'id'  as "Volume ID"
+      a ->> 'name' as "Data Volume Attachment Name",
+      a ->> 'id'  as "Data Volume Attachment ID",
+      a -> 'volume' ->> 'name' as "Data Volume Name",
+      a -> 'volume' ->> 'id'  as "Data Volume ID"
     from
       ibm_is_instance,
       jsonb_array_elements(volume_attachments) as a
@@ -351,12 +332,12 @@ query "ibm_compute_instance_volume" {
 query "ibm_compute_instance_disks" {
   sql = <<-EOQ
     select
-      d ->> 'name'  as "Name",
-      d ->> 'size' as "Size",
+      d ->> 'name' as "Disk Name",
+      d ->> 'id' as "Disk ID",
+      d ->> 'size' as "Disk Size",
       d ->> 'interface_type' as "Interface Type",
       d ->> 'resource_type' as "Resource Type",
       d ->> 'created_at' as "Created At",
-      d ->> 'id' as "ID",
       d ->> 'href' as "HREF"
     from
       ibm_is_instance,
@@ -371,8 +352,8 @@ query "ibm_compute_instance_disks" {
 query "ibm_compute_instance_vpc" {
   sql = <<-EOQ
     select
-      vpc ->> 'name'  as "Name",
-      vpc ->> 'id' as "ID",
+      vpc ->> 'name'  as "VPC Name",
+      vpc ->> 'id' as "VPC ID",
       vpc ->> 'href' as "HREF",
       vpc ->> 'crn' as "CRN"
     from
@@ -387,8 +368,8 @@ query "ibm_compute_instance_vpc" {
 query "ibm_compute_instance_network_interfaces" {
   sql = <<-EOQ
     select
-      i ->> 'id' as "ID",
-      i ->> 'name' as "Name",
+      i ->> 'name' as "Network Interface Name",
+      i ->> 'id' as "Network Interface ID",
       i ->> 'primary_ipv4_address' as "Primary IPv4 Address",
       i -> 'subnet' ->> 'name' as "Subnet Name",
       i -> 'subnet' ->> 'id' as "Subnet ID"
@@ -405,12 +386,28 @@ query "ibm_compute_instance_network_interfaces" {
 query "ibm_compute_instance_zone" {
   sql = <<-EOQ
     select
-      zone ->> 'name' as "Name",
+      zone ->> 'name' as "Zone Name",
       zone ->> 'href' as "HREF"
     from
       ibm_is_instance
     where
       crn = $1;
+  EOQ
+
+  param "crn" {}
+}
+
+query "ibm_compute_instance_tags" {
+  sql = <<-EOQ
+    select
+      (trim('"' FROM tag::text)) as "User Tag"
+    from
+      ibm_is_instance,
+      jsonb_array_elements(tags) as tag
+    where
+      crn = $1
+    order by
+      tag;
   EOQ
 
   param "crn" {}

@@ -20,12 +20,35 @@ dashboard "ibm_compute_instance_dashboard" {
       width = 2
     }
 
+    # Assessments
+    card {
+      sql   = query.ibm_compute_public_instance_count.sql
+      width = 2
+    }
+
   }
 
   container {
 
     title = "Assessments"
-    width = 6
+    width = 12
+
+    chart {
+      title = "Public/Private"
+      sql   = query.ibm_compute_instance_by_floating_ip.sql
+      type  = "donut"
+      width = 3
+
+      series "count" {
+        point "private" {
+          color = "ok"
+        }
+        point "public" {
+          color = "alert"
+        }
+      }
+    }
+
   }
 
   container {
@@ -36,56 +59,49 @@ dashboard "ibm_compute_instance_dashboard" {
       title = "Instances by Account"
       sql   = query.ibm_compute_instance_by_account.sql
       type  = "column"
-      width = 4
+      width = 3
     }
 
     chart {
       title = "Instances by Region"
       sql   = query.ibm_compute_instance_by_region.sql
       type  = "column"
-      width = 4
+      width = 3
     }
 
     chart {
       title = "Instances by Resource Group"
       sql   = query.ibm_compute_instance_by_resource_group.sql
       type  = "column"
-      width = 4
-    }
-
-    chart {
-      title = "Instances by Status"
-      sql   = query.ibm_compute_instance_by_status.sql
-      type  = "column"
-      width = 4
-    }
-
-    chart {
-      title = "Instances by Age"
-      sql   = query.ibm_compute_instance_by_creation_month.sql
-      type  = "column"
-      width = 4
+      width = 3
     }
 
     chart {
       title = "Instances by Zone"
       sql   = query.ibm_compute_instance_by_zone.sql
       type  = "column"
-      width = 4
+      width = 3
+    }
+
+    chart {
+      title = "Instances by Status"
+      sql   = query.ibm_compute_instance_by_status.sql
+      type  = "column"
+      width = 3
+    }
+
+    chart {
+      title = "Instances by Age"
+      sql   = query.ibm_compute_instance_by_creation_month.sql
+      type  = "column"
+      width = 3
     }
 
     chart {
       title = "Instances by Architecture"
       sql   = query.ibm_compute_instance_by_architecture.sql
       type  = "column"
-      width = 4
-    }
-
-    chart {
-      title = "Instances by Image"
-      sql   = query.ibm_compute_instance_by_image.sql
-      type  = "column"
-      width = 4
+      width = 3
     }
 
   }
@@ -109,7 +125,41 @@ query "ibm_compute_instance_total_vcpu" {
   EOQ
 }
 
+query "ibm_compute_public_instance_count" {
+  sql = <<-EOQ
+    select
+      count(*) as value,
+      'Publicly Accessible' as label,
+      case count(*) when 0 then 'ok' else 'alert' end as "type"
+    from
+      ibm_is_instance
+    where
+      jsonb_array_length(floating_ips) <> 0
+  EOQ
+}
+
 # Assessment Queries
+
+query "ibm_compute_instance_by_floating_ip" {
+  sql = <<-EOQ
+    with instances as (
+      select
+        case
+          when jsonb_array_length(floating_ips) = 0 then 'private'
+          else 'public'
+        end as visibility
+      from
+        ibm_is_instance
+    )
+    select
+      visibility,
+      count(*)
+    from
+      instances
+    group by
+      visibility
+  EOQ
+}
 
 # Analysis Queries
 
@@ -234,14 +284,3 @@ query "ibm_compute_instance_by_architecture" {
   EOQ
 }
 
-query "ibm_compute_instance_by_image" {
-  sql = <<-EOQ
-    select
-      image ->> 'name' as "Image",
-      count(i.*) as total
-    from
-      ibm_is_instance as i
-    group by
-      image ->> 'name';
-  EOQ
-}

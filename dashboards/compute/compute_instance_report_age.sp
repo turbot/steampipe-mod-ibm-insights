@@ -55,6 +55,10 @@ dashboard "ibm_compute_instance_age_report" {
     column "CRN" {
       display = "none"
     }
+
+    column "ID" {
+      href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
+    }
     sql = query.ibm_compute_instance_age_table.sql
   }
 
