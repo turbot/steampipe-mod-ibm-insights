@@ -124,6 +124,8 @@ query "ibm_kms_key_input" {
       ) as tags
     from
       ibm_kms_key
+    where
+      state <> '5'
     order by
       title;
   EOQ

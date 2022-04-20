@@ -147,7 +147,7 @@ dashboard "ibm_kms_key_dashboard" {
 
 query "ibm_kms_key_count" {
   sql = <<-EOQ
-    select count(*) as "Keys" from ibm_kms_key;
+    select count(*) as "Keys" from ibm_kms_key where state <> '5';
   EOQ
 }
 
@@ -159,7 +159,8 @@ query "ibm_kms_standard_key_count" {
     from
       ibm_kms_key
     where
-      extractable;
+      extractable
+      and state <> '5';
   EOQ
 }
 
@@ -171,7 +172,8 @@ query "ibm_kms_root_key_count" {
     from
       ibm_kms_key
     where
-      not extractable;
+      not extractable
+      and state <> '5';
   EOQ
 }
 
@@ -184,7 +186,7 @@ query "ibm_kms_key_disabled_count" {
   from
     ibm_kms_key
   where
-    state = '2';
+    state in ('2', '3');
   EOQ
 }
 
@@ -198,7 +200,8 @@ query "ibm_kms_root_key_rotation_disabled_count" {
       ibm_kms_key
     where
       rotation_policy = '{}'
-      and not extractable;
+      and not extractable
+      and state <> '5';
   EOQ
 }
 
@@ -211,7 +214,8 @@ query "ibm_kms_key_dual_auth_disabled_count" {
     from
       ibm_kms_key
     where
-      dual_auth_delete ->> 'enabled' = 'false';
+      dual_auth_delete ->> 'enabled' = 'false'
+      and state <> '5';
   EOQ
 }
 
@@ -233,6 +237,7 @@ query "ibm_kms_root_key_rotation_status" {
         ibm_kms_key
       where
         not extractable
+        and state <> '5'
      ) as t
     group by
       rotation_status
@@ -248,6 +253,8 @@ query "ibm_kms_key_dual_auth_status" {
       count(*)
     from
       ibm_kms_key
+    where
+      state <> '5'
     group by
       status;
   EOQ
@@ -256,7 +263,7 @@ query "ibm_kms_key_dual_auth_status" {
 query "ibm_kms_key_state" {
   sql = <<-EOQ
     select
-      case when state = '2' then 'disabled' else 'ok' end as status,
+      case when state in ('2', '3') then 'disabled' else 'ok' end as status,
       count(*)
     from
       ibm_kms_key
@@ -279,6 +286,7 @@ query "ibm_kms_key_by_account" {
       ibm_account as a
     where
       k.account_id = a.customer_id
+      and k.state <> '5'
     group by
       a.name
     order by
@@ -293,6 +301,8 @@ query "ibm_kms_key_by_region" {
       count(k.*) as "Keys"
     from
       ibm_kms_key as k
+    where
+      k.state <> '5'
     group by
       region;
   EOQ
@@ -303,10 +313,10 @@ query "ibm_kms_key_by_state" {
     select
       case
         when state = '0' then 'Pre-activation'
-        when state = '1' then 'Active'
-        when state = '2' then 'Suspended'
+        when state = '1' then 'Enabled'
+        when state = '2' then 'Disabled'
         when state = '3' then 'Deactivated'
-        when state = '5' then 'Destroyed'
+        when state = '5' then 'Deleted'
         else state
         end as state_code,
       count(*)
@@ -327,6 +337,8 @@ query "ibm_kms_key_by_creation_month" {
           'YYYY-MM') as creation_month
       from
         ibm_kms_key
+      where
+        state <> '5'
     ),
     months as (
       select
@@ -369,6 +381,8 @@ query "ibm_kms_key_by_algorithm" {
       count(k.*) as "Keys"
     from
       ibm_kms_key as k
+    where
+      k.state <> '5'
     group by
       algorithm_type;
   EOQ

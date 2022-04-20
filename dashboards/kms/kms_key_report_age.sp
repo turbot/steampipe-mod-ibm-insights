@@ -75,7 +75,8 @@ query "ibm_kms_key_24_hours_count" {
     from
       ibm_kms_key
     where
-      creation_date > now() - '1 days' :: interval;
+      creation_date > now() - '1 days' :: interval
+      and state <> '5';
   EOQ
 }
 
@@ -87,7 +88,8 @@ query "ibm_kms_key_30_days_count" {
     from
       ibm_kms_key
     where
-      creation_date between symmetric now() - '1 days' :: interval and now() - '30 days' :: interval;
+      creation_date between symmetric now() - '1 days' :: interval and now() - '30 days' :: interval
+      and state <> '5';
   EOQ
 }
 
@@ -99,7 +101,8 @@ query "ibm_kms_key_30_90_days_count" {
     from
       ibm_kms_key
     where
-      creation_date between symmetric now() - '30 days' :: interval and now() - '90 days' :: interval;
+      creation_date between symmetric now() - '30 days' :: interval and now() - '90 days' :: interval
+      and state <> '5';
   EOQ
 }
 
@@ -111,7 +114,8 @@ query "ibm_kms_key_90_365_days_count" {
     from
       ibm_kms_key
     where
-      creation_date between symmetric (now() - '90 days'::interval) and (now() - '365 days'::interval);
+      creation_date between symmetric (now() - '90 days'::interval) and (now() - '365 days'::interval)
+      and state <> '5';
   EOQ
 }
 
@@ -123,7 +127,8 @@ query "ibm_kms_key_1_year_count" {
     from
       ibm_kms_key
     where
-      creation_date <= now() - '1 year' :: interval;
+      creation_date <= now() - '1 year' :: interval
+      and state <> '5';
   EOQ
 }
 
@@ -151,6 +156,7 @@ query "ibm_kms_key_age_table" {
       ibm_account as a
     where
       k.account_id = a.customer_id
+      and k.state <> '5'
     order by
       k.id;
   EOQ
