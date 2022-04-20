@@ -389,7 +389,7 @@ query "ibm_compute_instance_network_interfaces" {
     select
       i ->> 'id' as "ID",
       i ->> 'name' as "Name",
-      i ->> 'primary_ipv4_address' as "Primary IPV4 Address",
+      i ->> 'primary_ipv4_address' as "Primary IPv4 Address",
       i -> 'subnet' ->> 'name' as "Subnet Name",
       i -> 'subnet' ->> 'id' as "Subnet ID"
     from
