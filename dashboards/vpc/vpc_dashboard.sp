@@ -57,7 +57,7 @@ dashboard "ibm_vpc_dashboard" {
       title = "VPCs by Account"
       sql   = query.ibm_vpc_by_account.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
@@ -67,9 +67,8 @@ dashboard "ibm_vpc_dashboard" {
       legend {
         position = "bottom"
       }
-      width = 3
+      width = 4
     }
-
 
     chart {
       title = "VPCs by Region"
@@ -78,14 +77,28 @@ dashboard "ibm_vpc_dashboard" {
       legend {
         position = "bottom"
       }
-      width = 3
+      width = 4
     }
 
     chart {
       title = "VPCs by Age"
       sql   = query.ibm_vpc_by_creation_month.sql
       type  = "column"
-      width = 3
+      width = 4
+    }
+
+    chart {
+      title = "VPCs by Size"
+      sql   = query.ibm_vpc_by_size.sql
+      type  = "column"
+      width = 4
+    }
+
+    chart {
+      title = "VPCs by RFC1918 Range"
+      sql   = query.ibm_vpc_by_rfc1918_range.sql
+      type  = "column"
+      width = 4
     }
   }
 
@@ -103,7 +116,7 @@ query "ibm_classic_infrastructure_vpc_count" {
   sql = <<-EOQ
     select
       count(*) as value,
-      'Classic Infrastructure' as label
+      'VPCs With Classic Access' as label
     from
       ibm_is_vpc
     where
@@ -239,3 +252,55 @@ query "ibm_vpc_by_creation_month" {
   EOQ
 }
 
+query "ibm_vpc_by_size" {
+  sql = <<-EOQ
+    with vpc_size as (
+      select
+        id,
+        a -> 'cidr' as cidr_block,
+        concat(
+          '/', masklen((a ->> 'cidr')::cidr),
+          ' (', power(2, 32 - masklen((a ->> 'cidr')::cidr)), ')'
+        ) as size
+      from
+        ibm_is_vpc,
+        jsonb_array_elements(address_prefixes) as a
+    )
+    select
+      size,
+      count(*)
+    from
+      vpc_size
+    group by
+      size;
+  EOQ
+}
+
+query "ibm_vpc_by_rfc1918_range" {
+  sql = <<-EOQ
+    with cidr_buckets as (
+      select
+        id,
+        title,
+        a ->> 'cidr' as cidr,
+        case
+          when (a ->> 'cidr')::cidr <<= '10.0.0.0/8'::cidr then '10.0.0.0/8'
+          when (a ->> 'cidr')::cidr <<= '172.16.0.0/12'::cidr then '172.16.0.0/12'
+          when (a ->> 'cidr')::cidr <<= '192.168.0.0/16'::cidr then '192.168.0.0/16'
+          else 'Public Range'
+        end as rfc1918_bucket
+      from
+        ibm_is_vpc,
+        jsonb_array_elements(address_prefixes) as a
+    )
+    select
+      rfc1918_bucket,
+      count(*)
+    from
+      cidr_buckets
+    group by
+      rfc1918_bucket
+    order by
+      rfc1918_bucket
+  EOQ
+}
