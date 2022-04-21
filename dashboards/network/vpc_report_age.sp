@@ -1,9 +1,9 @@
-dashboard "ibm_vpc_age_report" {
+dashboard "ibm_is_vpc_age_report" {
 
   title         = "IBM VPC Age Report"
-  documentation = file("./dashboards/vpc/docs/vpc_report_age.md")
+  documentation = file("./dashboards/network/docs/vpc_report_age.md")
 
-  tags = merge(local.vpc_common_tags, {
+  tags = merge(local.network_common_tags, {
     type     = "Report"
     category = "Age"
   })
@@ -11,36 +11,36 @@ dashboard "ibm_vpc_age_report" {
   container {
 
     card {
-      sql   = query.ibm_vpc_count.sql
+      sql   = query.ibm_is_vpc_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_vpc_24_hours_count.sql
-      width = 2
-      type  = "info"
-    }
-
-    card {
-      sql   = query.ibm_vpc_30_days_count.sql
+      sql   = query.ibm_is_vpc_24_hours_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_vpc_30_90_days_count.sql
+      sql   = query.ibm_is_vpc_30_days_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_vpc_90_365_days_count.sql
+      sql   = query.ibm_is_vpc_30_90_days_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_vpc_1_year_count.sql
+      sql   = query.ibm_is_vpc_90_365_days_count.sql
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      sql   = query.ibm_is_vpc_1_year_count.sql
       width = 2
       type  = "info"
     }
@@ -56,12 +56,12 @@ dashboard "ibm_vpc_age_report" {
       display = "none"
     }
 
-    sql = query.ibm_vpc_age_table.sql
+    sql = query.ibm_is_vpc_age_table.sql
   }
 
 }
 
-query "ibm_vpc_24_hours_count" {
+query "ibm_is_vpc_24_hours_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -73,7 +73,7 @@ query "ibm_vpc_24_hours_count" {
   EOQ
 }
 
-query "ibm_vpc_30_days_count" {
+query "ibm_is_vpc_30_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -86,7 +86,7 @@ query "ibm_vpc_30_days_count" {
   EOQ
 }
 
-query "ibm_vpc_30_90_days_count" {
+query "ibm_is_vpc_30_90_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -99,7 +99,7 @@ query "ibm_vpc_30_90_days_count" {
   EOQ
 }
 
-query "ibm_vpc_90_365_days_count" {
+query "ibm_is_vpc_90_365_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -112,7 +112,7 @@ query "ibm_vpc_90_365_days_count" {
   EOQ
 }
 
-query "ibm_vpc_1_year_count" {
+query "ibm_is_vpc_1_year_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -124,7 +124,7 @@ query "ibm_vpc_1_year_count" {
   EOQ
 }
 
-query "ibm_vpc_age_table" {
+query "ibm_is_vpc_age_table" {
   sql = <<-EOQ
     select
       v.name as "Name",

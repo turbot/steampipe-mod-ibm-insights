@@ -1,15 +1,15 @@
-dashboard "ibm_vpc_detail" {
+dashboard "ibm_is_vpc_detail" {
 
   title = "IBM VPC Detail"
-  documentation = file("./dashboards/vpc/docs/vpc_detail.md")
+  documentation = file("./dashboards/network/docs/vpc_detail.md")
 
-  tags = merge(local.vpc_common_tags, {
+  tags = merge(local.network_common_tags, {
     type = "Detail"
   })
 
   input "vpc_crn" {
     title = "Select a VPC:"
-    sql   = query.ibm_vpc_input.sql
+    sql   = query.ibm_is_vpc_input.sql
     width = 4
   }
 
@@ -17,7 +17,7 @@ dashboard "ibm_vpc_detail" {
 
     card {
       width = 2
-      query = query.ibm_vpc_num_ips_for_vpc
+      query = query.ibm_is_vpc_num_ips_for_vpc
       args  = {
         crn = self.input.vpc_crn.value
       }
@@ -43,7 +43,7 @@ dashboard "ibm_vpc_detail" {
         title = "Overview"
         type  = "line"
         width = 6
-        query = query.ibm_vpc_overview
+        query = query.ibm_is_vpc_overview
         args  = {
           crn = self.input.vpc_crn.value
         }
@@ -52,7 +52,7 @@ dashboard "ibm_vpc_detail" {
       table {
         title = "Tags"
         width = 6
-        query = query.ibm_vpc_tags
+        query = query.ibm_is_vpc_tags
         args  = {
           crn = self.input.vpc_crn.value
         }
@@ -66,7 +66,7 @@ dashboard "ibm_vpc_detail" {
 
       table {
         title = "Address Prefixes"
-        query = query.ibm_vpc_address_prefixes
+        query = query.ibm_is_vpc_address_prefixes
         args  = {
           crn = self.input.vpc_crn.value
         }
@@ -74,7 +74,7 @@ dashboard "ibm_vpc_detail" {
 
       # table {
       #   title = "DHCP Options"
-      #   query = query.ibm_vpc_dhcp_options
+      #   query = query.ibm_is_vpc_dhcp_options
       #   args  = {
       #     crn = self.input.vpc_crn.value
       #   }
@@ -92,14 +92,14 @@ dashboard "ibm_vpc_detail" {
       title = "Subnets by AZ"
       type  = "column"
       width = 4
-      query = query.ibm_vpc_subnet_by_az
+      query = query.ibm_is_vpc_subnet_by_az
       args = {
         crn = self.input.vpc_crn.value
       }
     }
 
     table {
-      query = query.ibm_vpc_subnets_for_vpc
+      query = query.ibm_is_vpc_subnets_for_vpc
       width = 8
       args = {
         crn = self.input.vpc_crn.value
@@ -110,7 +110,7 @@ dashboard "ibm_vpc_detail" {
 
   table {
     title = "Cloud Service Endpoint Source Addresses"
-    query = query.ibm_vpc_cse_source_ip_addresses
+    query = query.ibm_is_vpc_cse_source_ip_addresses
     args = {
       crn = self.input.vpc_crn.value
     }
@@ -119,7 +119,7 @@ dashboard "ibm_vpc_detail" {
 
   table {
     title = "Default Route Tables"
-    query = query.ibm_vpc_default_route_tables
+    query = query.ibm_is_vpc_default_route_tables
     args = {
       crn = self.input.vpc_crn.value
     }
@@ -127,7 +127,7 @@ dashboard "ibm_vpc_detail" {
 
   table {
     title = "Default Security Group"
-    query = query.ibm_vpc_default_security_group
+    query = query.ibm_is_vpc_default_security_group
     args = {
       crn = self.input.vpc_crn.value
     }
@@ -135,7 +135,7 @@ dashboard "ibm_vpc_detail" {
 
   table {
     title = "Default NACL"
-    query = query.ibm_vpc_default_network_acl
+    query = query.ibm_is_vpc_default_network_acl
     args = {
       crn = self.input.vpc_crn.value
     }
@@ -143,7 +143,7 @@ dashboard "ibm_vpc_detail" {
 
 }
 
-query "ibm_vpc_input" {
+query "ibm_is_vpc_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -176,7 +176,7 @@ query "ibm_subnet_count_for_vpc" {
   param "crn" {}
 }
 
-query "ibm_vpc_num_ips_for_vpc" {
+query "ibm_is_vpc_num_ips_for_vpc" {
   sql = <<-EOQ
     with cidrs as (
       select
@@ -197,7 +197,7 @@ query "ibm_vpc_num_ips_for_vpc" {
   param "crn" {}
 }
 
-query "ibm_vpc_subnets_for_vpc" {
+query "ibm_is_vpc_subnets_for_vpc" {
   sql = <<-EOQ
     with subnets as (
       select
@@ -230,7 +230,7 @@ query "ibm_vpc_subnets_for_vpc" {
   param "crn" {}
 }
 
-query "ibm_vpc_default_security_group" {
+query "ibm_is_vpc_default_security_group" {
   sql = <<-EOQ
     select
       default_security_group ->> 'name' as "Group Name",
@@ -248,7 +248,7 @@ query "ibm_vpc_default_security_group" {
   param "crn" {}
 }
 
-query "ibm_vpc_default_route_tables" {
+query "ibm_is_vpc_default_route_tables" {
   sql = <<-EOQ
     select
       default_routing_table ->> 'name' as "Route Table Name",
@@ -265,7 +265,7 @@ query "ibm_vpc_default_route_tables" {
   param "crn" {}
 }
 
-query "ibm_vpc_default_network_acl" {
+query "ibm_is_vpc_default_network_acl" {
   sql = <<-EOQ
     select
       default_network_acl ->> 'name' as "Name",
@@ -283,7 +283,7 @@ query "ibm_vpc_default_network_acl" {
   param "crn" {}
 }
 
-query "ibm_vpc_overview" {
+query "ibm_is_vpc_overview" {
   sql = <<-EOQ
     select
       id as "ID",
@@ -303,7 +303,7 @@ query "ibm_vpc_overview" {
   param "crn" {}
 }
 
-query "ibm_vpc_address_prefixes" {
+query "ibm_is_vpc_address_prefixes" {
   sql = <<-EOQ
     select
       (trim('"' FROM (p ->> 'cidr')))::cidr as "Address Prefix",
@@ -318,7 +318,7 @@ query "ibm_vpc_address_prefixes" {
   param "crn" {}
 }
 
-query "ibm_vpc_subnet_by_az" {
+query "ibm_is_vpc_subnet_by_az" {
   sql   = <<-EOQ
     select
       zone ->> 'name' as Zone,
@@ -336,7 +336,7 @@ query "ibm_vpc_subnet_by_az" {
   param "crn" {}
 }
 
-query "ibm_vpc_cse_source_ip_addresses" {
+query "ibm_is_vpc_cse_source_ip_addresses" {
   sql = <<-EOQ
     select
       i -> 'ip' ->> 'address' as "IP Address",
@@ -352,7 +352,7 @@ query "ibm_vpc_cse_source_ip_addresses" {
   param "crn" {}
 }
 
-query "ibm_vpc_tags" {
+query "ibm_is_vpc_tags" {
   sql = <<-EOQ
     select
       (trim('"' FROM tag::text)) as "User Tag"
