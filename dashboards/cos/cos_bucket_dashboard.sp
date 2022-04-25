@@ -97,12 +97,12 @@ dashboard "ibm_cos_bucket_dashboard" {
   container {
     title = "Analysis"
 
-    # chart {
-    #   title = "Buckets by Account"
-    #   sql   = query.ibm_cos_bucket_by_account.sql
-    #   type  = "column"
-    #   width = 4
-    # }
+    chart {
+      title = "Buckets by Account"
+      sql   = query.ibm_cos_bucket_by_account.sql
+      type  = "column"
+      width = 4
+    }
 
     chart {
       title = "Buckets by Region"
@@ -234,6 +234,23 @@ query "ibm_cos_bucket_versioning_mfa_status" {
 }
 
 # Analysis Queries
+
+query "ibm_cos_bucket_by_account" {
+  sql = <<-EOQ
+    select
+      a.name as "account",
+      count(b.*) as "Disks"
+    from
+      ibm_cos_bucket as b,
+      ibm_account as a
+    where
+      a.customer_id = b.account_id
+    group by
+      account
+    order by count(b.*) desc;
+  EOQ
+}
+
 
 query "ibm_cos_bucket_by_region" {
   sql = <<-EOQ
