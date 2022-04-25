@@ -72,14 +72,6 @@ dashboard "ibm_is_vpc_detail" {
         }
       }
 
-      # table {
-      #   title = "DHCP Options"
-      #   query = query.ibm_is_vpc_dhcp_options
-      #   args  = {
-      #     crn = self.input.vpc_crn.value
-      #   }
-      # }
-
     }
 
   }
@@ -89,10 +81,10 @@ dashboard "ibm_is_vpc_detail" {
     title = "Subnets"
 
     chart {
-      title = "Subnets by AZ"
+      title = "Subnets by Zone"
       type  = "column"
       width = 4
-      query = query.ibm_is_vpc_subnet_by_az
+      query = query.ibm_is_vpc_subnet_by_zone
       args = {
         crn = self.input.vpc_crn.value
       }
@@ -107,6 +99,34 @@ dashboard "ibm_is_vpc_detail" {
     }
 
   }
+
+  container {
+
+    title = "NACLs"
+
+    flow {
+      base  = flow.nacl_flow
+      title = "Inbound NACLs"
+      width = 6
+      query = query.ibm_inbound_nacl_for_vpc_sankey
+      args = {
+        crn = self.input.vpc_crn.value
+      }
+    }
+
+
+    flow {
+      base  = flow.nacl_flow
+      title = "Outbound NACLs"
+      width = 6
+      query = query.ibm_outbound_nacl_for_vpc_sankey
+      args = {
+        crn = self.input.vpc_crn.value
+      }
+    }
+
+  }
+
 
   table {
     title = "Cloud Service Endpoint Source Addresses"
@@ -139,6 +159,21 @@ dashboard "ibm_is_vpc_detail" {
     args = {
       crn = self.input.vpc_crn.value
     }
+  }
+
+}
+
+flow "nacl_flow" {
+  width = 6
+  type  = "sankey"
+
+
+  category "drop" {
+    color = "alert"
+  }
+
+  category "accept" {
+    color = "ok"
   }
 
 }
@@ -318,7 +353,7 @@ query "ibm_is_vpc_address_prefixes" {
   param "crn" {}
 }
 
-query "ibm_is_vpc_subnet_by_az" {
+query "ibm_is_vpc_subnet_by_zone" {
   sql   = <<-EOQ
     select
       zone ->> 'name' as Zone,
@@ -347,6 +382,232 @@ query "ibm_is_vpc_cse_source_ip_addresses" {
       jsonb_array_elements(cse_source_ips) as i
     where
       crn = $1
+  EOQ
+
+  param "crn" {}
+}
+
+query "ibm_inbound_nacl_for_vpc_sankey" {
+  sql = <<-EOQ
+
+    with aces as (
+      select
+        crn,
+        title,
+        id as network_acl_id,
+        e ->> 'protocol' as protocol,
+        e ->> 'source' as cidr_block,
+        e ->> 'action' as rule_action,
+        e -> 'name' as rule_name,
+
+        case when e ->> 'action' = 'allow' then 'Allow ' else 'Deny ' end ||
+          case
+              when e ->>'protocol' = 'all' then 'All Traffic'
+              when e ->>'protocol' = 'icmp' then 'All ICMP'
+              when e ->>'protocol' = 'udp' and e ->> 'source_port_min' = '1' and e ->> 'source_port_max' = '65535'
+                then 'All UDP'
+              when e ->>'protocol' = 'tcp' and e ->>'source_port_min' = '1' and e ->>'source_port_max' = '65535'
+                then  'All TCP'
+              when e ->>'protocol' = 'tcp' and e ->> 'source_port_min' = e ->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '/TCP')
+              when e->>'protocol' = 'udp' and e ->> 'source_port_min'  = e ->> 'source_port_max'
+                then  concat(e->> 'source_port_min', '/UDP')
+              when e->>'protocol' = 'tcp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/TCP')
+              when e->>'protocol' = 'udp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/udp')
+              else concat('Procotol: ', e->>'protocol')
+        end as rule_description,
+
+        a ->> 'id' as subnet_id
+      from
+        ibm_is_network_acl,
+        jsonb_array_elements(rules) as e,
+        jsonb_array_elements(subnets) as a
+      where
+        vpc ->> 'crn' = $1
+        and e ->> 'direction' = 'inbound'
+
+    )
+    -- CIDR Nodes
+    select
+      distinct cidr_block as id,
+      cidr_block as title,
+      'cidr_block' as category,
+      null as from_id,
+      null as to_id
+    from aces
+
+    -- Rule Nodes
+    union select
+      concat(network_acl_id, '_', rule_name) as id,
+      rule_description as title,
+      'rule' as category,
+      null as from_id,
+      null as to_id
+    from aces
+
+    -- ACL Nodes
+    union select
+      distinct network_acl_id as id,
+      network_acl_id as title,
+      'nacl' as category,
+      null as from_id,
+      null as to_id
+    from aces
+
+    -- Subnet node
+    union select
+      distinct subnet_id as id,
+      subnet_id as title,
+      'subnet' as category,
+      null as from_id,
+      null as to_id
+    from aces
+
+    -- ip -> rule edge
+    union select
+      null as id,
+      null as title,
+      rule_action as category,
+      cidr_block as from_id,
+      concat(network_acl_id, '_', rule_name) as to_id
+    from aces
+
+    -- rule -> NACL edge
+    union select
+      null as id,
+      null as title,
+      rule_action as category,
+      concat(network_acl_id, '_', rule_name) as from_id,
+      network_acl_id as to_id
+    from aces
+
+    -- nacl -> subnet edge
+    union select
+      null as id,
+      null as title,
+      'attached' as category,
+      network_acl_id as from_id,
+      subnet_id as to_id
+    from aces
+
+  EOQ
+
+  param "crn" {}
+}
+
+query "ibm_outbound_nacl_for_vpc_sankey" {
+  sql = <<-EOQ
+
+    with aces as (
+      select
+        crn,
+        title,
+        id as network_acl_id,
+        e -> 'Protocol' as protocol,
+        e ->> 'source' as cidr_block,
+        e ->> 'action' as rule_action,
+        e -> 'name' as rule_name,
+       case
+              when e ->>'protocol' = 'all' then 'All Traffic'
+              when e ->>'protocol' = 'icmp' then 'All ICMP'
+              when e ->>'protocol' = 'udp' and e ->> 'source_port_min' = '1' and e ->> 'source_port_max' = '65535'
+                then 'All UDP'
+              when e ->>'protocol' = 'tcp' and e ->>'source_port_min' = '1' and e ->>'source_port_max' = '65535'
+                then  'All TCP'
+              when e ->>'protocol' = 'tcp' and e ->> 'source_port_min' = e ->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '/TCP')
+              when e->>'protocol' = 'udp' and e ->> 'source_port_min'  = e ->> 'source_port_max'
+                then  concat(e->> 'source_port_min', '/UDP')
+              when e->>'protocol' = 'tcp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/TCP')
+              when e->>'protocol' = 'udp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/udp')
+              else concat('Procotol: ', e->>'protocol')
+        end as rule_description,
+
+        a ->> 'id' as subnet_id
+      from
+        ibm_is_network_acl,
+        jsonb_array_elements(rules) as e,
+        jsonb_array_elements(subnets) as a
+      where
+        vpc ->> 'crn' = $1
+        and e ->> 'direction' = 'outbound'
+    )
+
+    -- Subnet Nodes
+    select
+      distinct subnet_id as id,
+      subnet_id as title,
+      'subnet' as category,
+      null as from_id,
+      null as to_id,
+      0 as depth
+    from aces
+
+    -- ACL Nodes
+    union select
+      distinct network_acl_id as id,
+      network_acl_id as title,
+      'nacl' as category,
+      null as from_id,
+      null as to_id,
+      1 as depth
+
+    from aces
+
+    -- Rule Nodes
+    union select
+      concat(network_acl_id, '_', rule_name) as id,
+     rule_description as title,
+      'rule' as category,
+      null as from_id,
+      null as to_id,
+      2 as depth
+    from aces
+
+    -- CIDR Nodes
+    union select
+      distinct cidr_block as id,
+      cidr_block as title,
+      'cidr_block' as category,
+      null as from_id,
+      null as to_id,
+      3 as depth
+    from aces
+
+    -- nacl -> subnet edge
+    union select
+      null as id,
+      null as title,
+      'attached' as category,
+      network_acl_id as from_id,
+      subnet_id as to_id,
+      null as depth
+    from aces
+
+    -- rule -> NACL edge
+    union select
+      null as id,
+      null as title,
+      rule_action as category,
+      concat(network_acl_id, '_', rule_name) as from_id,
+      network_acl_id as to_id,
+      null as depth
+    from aces
+
+    -- ip -> rule edge
+    union select
+      null as id,
+      null as title,
+      rule_action as category,
+      cidr_block as from_id,
+      concat(network_acl_id, '_', rule_name) as to_id,
+      null as depth
+    from aces
+
   EOQ
 
   param "crn" {}
