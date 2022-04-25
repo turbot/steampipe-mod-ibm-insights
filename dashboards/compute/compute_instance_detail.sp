@@ -231,7 +231,7 @@ query "ibm_compute_instance_memory" {
 query "ibm_compute_instance_bandwidth" {
   sql = <<-EOQ
     select
-      'Bandwidth' as label,
+      'Bandwidth (Mbps)' as label,
       bandwidth  as value
     from
       ibm_is_instance
@@ -260,8 +260,8 @@ query "ibm_compute_instance_architecture" {
 query "ibm_compute_instance_image" {
   sql = <<-EOQ
     select
-      image ->> 'name' as "Image Name",
-      image ->> 'id' as "Image ID",
+      image ->> 'name' as "Name",
+      image ->> 'id' as "ID",
       image ->> 'href' as "HREF",
       image ->> 'crn' as "CRN"
     from
@@ -298,10 +298,10 @@ query "ibm_compute_instance_overview" {
 query "ibm_compute_instance_boot_volume" {
   sql = <<-EOQ
     select
-      boot_volume_attachment ->> 'name' as "Boot Volume Attachment Name",
-      boot_volume_attachment ->> 'id'  as "Boot Volume Attachment ID",
       boot_volume_attachment -> 'volume' ->> 'name' as "Boot Volume Name",
-      boot_volume_attachment -> 'volume' ->> 'id'  as "Boot Volume ID"
+      boot_volume_attachment -> 'volume' ->> 'id'  as "Boot Volume ID",
+      boot_volume_attachment ->> 'name' as "Boot Volume Attachment Name",
+      boot_volume_attachment ->> 'id'  as "Boot Volume Attachment ID"
     from
       ibm_is_instance
     where
@@ -314,10 +314,10 @@ query "ibm_compute_instance_boot_volume" {
 query "ibm_compute_instance_data_volume" {
   sql = <<-EOQ
     select
-      a ->> 'name' as "Data Volume Attachment Name",
-      a ->> 'id'  as "Data Volume Attachment ID",
       a -> 'volume' ->> 'name' as "Data Volume Name",
-      a -> 'volume' ->> 'id'  as "Data Volume ID"
+      a -> 'volume' ->> 'id'  as "Data Volume ID",
+      a ->> 'name' as "Data Volume Attachment Name",
+      a ->> 'id'  as "Data Volume Attachment ID"
     from
       ibm_is_instance,
       jsonb_array_elements(volume_attachments) as a
@@ -332,9 +332,9 @@ query "ibm_compute_instance_data_volume" {
 query "ibm_compute_instance_disks" {
   sql = <<-EOQ
     select
-      d ->> 'name' as "Disk Name",
-      d ->> 'id' as "Disk ID",
-      d ->> 'size' as "Disk Size",
+      d ->> 'name' as "Name",
+      d ->> 'id' as "ID",
+      d ->> 'size' as "Size",
       d ->> 'interface_type' as "Interface Type",
       d ->> 'resource_type' as "Resource Type",
       d ->> 'created_at' as "Created At",
@@ -352,8 +352,8 @@ query "ibm_compute_instance_disks" {
 query "ibm_compute_instance_vpc" {
   sql = <<-EOQ
     select
-      vpc ->> 'name'  as "VPC Name",
-      vpc ->> 'id' as "VPC ID",
+      vpc ->> 'name'  as "Name",
+      vpc ->> 'id' as "ID",
       vpc ->> 'href' as "HREF",
       vpc ->> 'crn' as "CRN"
     from
@@ -386,7 +386,7 @@ query "ibm_compute_instance_network_interfaces" {
 query "ibm_compute_instance_zone" {
   sql = <<-EOQ
     select
-      zone ->> 'name' as "Zone Name",
+      zone ->> 'name' as "Name",
       zone ->> 'href' as "HREF"
     from
       ibm_is_instance
@@ -400,7 +400,7 @@ query "ibm_compute_instance_zone" {
 query "ibm_compute_instance_tags" {
   sql = <<-EOQ
     select
-      (trim('"' FROM tag::text)) as "User Tag"
+      (trim('"' FROM tag::text)) as "User Tags"
     from
       ibm_is_instance,
       jsonb_array_elements(tags) as tag
