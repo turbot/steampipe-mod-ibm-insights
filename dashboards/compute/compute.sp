@@ -1,5 +1,5 @@
 locals {
   compute_common_tags = {
-    service = "AWS/Compute"
+    service = "IBM/Compute"
   }
 }

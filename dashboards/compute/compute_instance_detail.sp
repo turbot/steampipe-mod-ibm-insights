@@ -102,11 +102,24 @@ dashboard "ibm_compute_instance_detail" {
       }
 
       table {
-        title = "Data Volume"
+        title = "Data Volumes"
         query = query.ibm_compute_instance_data_volume
         args  = {
           crn = self.input.instance_crn.value
         }
+      }
+    }
+
+  }
+
+  container {
+    width = 12
+
+    table {
+      title = "Instance Storage Disks"
+      query = query.ibm_compute_instance_disks
+      args  = {
+        crn = self.input.instance_crn.value
       }
     }
 
@@ -125,18 +138,7 @@ dashboard "ibm_compute_instance_detail" {
 
   }
 
-  container {
-    width = 12
 
-    table {
-      title = "Disks"
-      query = query.ibm_compute_instance_disks
-      args  = {
-        crn = self.input.instance_crn.value
-      }
-    }
-
-  }
 
   container {
     width = 12
@@ -196,7 +198,7 @@ query "ibm_compute_instance_status" {
   sql = <<-EOQ
     select
       'Status' as label,
-      status as value
+      initcap(status) as value
     from
       ibm_is_instance
     where
@@ -210,7 +212,7 @@ query "ibm_compute_instance_status" {
 query "ibm_compute_instance_total_vcpu_count" {
   sql = <<-EOQ
     select
-      'Total vCPUs' as label,
+      'vCPUs' as label,
       sum((vcpu ->> 'count')::int) as value
     from
       ibm_is_instance
@@ -283,8 +285,7 @@ query "ibm_compute_instance_image" {
     select
       image ->> 'name' as "Name",
       image ->> 'id' as "ID",
-      image ->> 'href' as "HREF",
-      image ->> 'crn' as "CRN"
+      image ->> 'href' as "HREF"
     from
       ibm_is_instance
     where
@@ -298,13 +299,13 @@ query "ibm_compute_instance_image" {
 query "ibm_compute_instance_overview" {
   sql = <<-EOQ
     select
-      'name' as "Name",
+      name as "Name",
       id as "ID",
       created_at as "Created At",
       title as "Title",
+      href as "HREF",
       region as "Region",
       account_id as "Account ID",
-      href as "HREF",
       crn as "CRN"
     from
       ibm_is_instance
@@ -319,10 +320,10 @@ query "ibm_compute_instance_overview" {
 query "ibm_compute_instance_boot_volume" {
   sql = <<-EOQ
     select
-      boot_volume_attachment -> 'volume' ->> 'name' as "Boot Volume Name",
-      boot_volume_attachment -> 'volume' ->> 'id'  as "Boot Volume ID",
-      boot_volume_attachment ->> 'name' as "Boot Volume Attachment Name",
-      boot_volume_attachment ->> 'id'  as "Boot Volume Attachment ID"
+      boot_volume_attachment -> 'volume' ->> 'name' as "Name",
+      boot_volume_attachment -> 'volume' ->> 'id' as "ID",
+      boot_volume_attachment ->> 'name' as "Attachment Name",
+      boot_volume_attachment ->> 'id'  as "Attachment ID"
     from
       ibm_is_instance
     where
@@ -335,10 +336,10 @@ query "ibm_compute_instance_boot_volume" {
 query "ibm_compute_instance_data_volume" {
   sql = <<-EOQ
     select
-      a -> 'volume' ->> 'name' as "Data Volume Name",
-      a -> 'volume' ->> 'id'  as "Data Volume ID",
-      a ->> 'name' as "Data Volume Attachment Name",
-      a ->> 'id'  as "Data Volume Attachment ID"
+      a -> 'volume' ->> 'name' as "Name",
+      a -> 'volume' ->> 'id'  as "ID",
+      a ->> 'name' as "Attachment Name",
+      a ->> 'id'  as "Attachment ID"
     from
       ibm_is_instance,
       jsonb_array_elements(volume_attachments) as a
@@ -389,8 +390,8 @@ query "ibm_compute_instance_vpc" {
 query "ibm_compute_instance_network_interfaces" {
   sql = <<-EOQ
     select
-      i ->> 'name' as "Network Interface Name",
-      i ->> 'id' as "Network Interface ID",
+      i ->> 'name' as "Name",
+      i ->> 'id' as "ID",
       i ->> 'primary_ipv4_address' as "Primary IPv4 Address",
       i -> 'subnet' ->> 'name' as "Subnet Name",
       i -> 'subnet' ->> 'id' as "Subnet ID"
