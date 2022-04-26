@@ -68,21 +68,11 @@ dashboard "ibm_kms_key_detail" {
       table {
         title = "Overview"
         type  = "line"
-        width = 6
         query = query.ibm_kms_key_overview
         args  = {
           crn = self.input.key_crn.value
         }
 
-      }
-
-      table {
-        title = "Tags"
-        width = 6
-        query = query.ibm_kms_key_tags
-        args  = {
-          crn = self.input.key_crn.value
-        }
       }
 
     }
@@ -202,8 +192,8 @@ query "ibm_kms_root_key_rotation_enabled" {
 query "ibm_kms_key_dual_authentication" {
   sql = <<-EOQ
     select
-      'Dual Authorization Disabled' as label,
-      case when dual_auth_delete ->> 'enabled' = 'true' then 'enabled' else 'disabled' end as value,
+      'Dual Authorization' as label,
+      case when dual_auth_delete ->> 'enabled' = 'true' then 'Enabled' else 'Disabled' end as value,
       case when dual_auth_delete ->> 'enabled' = 'true' then 'ok' else 'alert' end as type
     from
       ibm_kms_key
@@ -259,23 +249,6 @@ query "ibm_kms_key_overview" {
       ibm_kms_key
     where
       crn = $1
-    EOQ
-
-  param "crn" {}
-}
-
-query "ibm_kms_key_tags" {
-  sql = <<-EOQ
-    select
-      tag ->> 'Key' as "Key",
-      tag ->> 'Value' as "Value"
-    from
-      ibm_kms_key,
-      jsonb_array_elements(tags) as tag
-    where
-      crn = $1
-    order by
-      tag ->> 'Key';
     EOQ
 
   param "crn" {}
