@@ -1,7 +1,7 @@
 dashboard "ibm_cos_bucket_lifecycle_report" {
 
-  title         = "IBM COS Bucket Lifecycle Report"
-  documentation = file("./dashboards/cos/docs/cos_bucket_report_lifecycle.md")
+  title         = "IBM Cloud Object Storage Bucket Lifecycle Report"
+  documentation = file("./dashboards/cloudobjectstorage/docs/cloudobjectstorage_bucket_report_lifecycle.md")
 
   tags = merge(local.cos_common_tags, {
     type     = "Report"
