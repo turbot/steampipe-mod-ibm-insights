@@ -1,7 +1,7 @@
 dashboard "ibm_cos_bucket_detail" {
 
-  title         = "IBM COS Bucket Detail"
-  documentation = file("./dashboards/cos/docs/cos_bucket_detail.md")
+  title         = "IBM Cloud Object Storage Bucket Detail"
+  documentation = file("./dashboards/cloudobjectstorage/docs/cloudobjectstorage_bucket_detail.md")
 
   tags = merge(local.cos_common_tags, {
     type = "Detail"
