@@ -102,11 +102,11 @@ dashboard "ibm_is_vpc_detail" {
 
   container {
 
-    title = "NACLs"
+    title = "Network ACLs"
 
     flow {
       base  = flow.nacl_flow
-      title = "Inbound NACLs"
+      title = "Network ACLs Inbound Analysis"
       width = 6
       query = query.ibm_inbound_nacl_for_vpc_sankey
       args = {
@@ -117,7 +117,7 @@ dashboard "ibm_is_vpc_detail" {
 
     flow {
       base  = flow.nacl_flow
-      title = "Outbound NACLs"
+      title = "Network ACLs Outbound Analysis"
       width = 6
       query = query.ibm_outbound_nacl_for_vpc_sankey
       args = {
@@ -125,6 +125,14 @@ dashboard "ibm_is_vpc_detail" {
       }
     }
 
+  }
+
+  table {
+    title = "Network ACLs"
+    query = query.ibm_is_vpc_network_acl
+    args = {
+      crn = self.input.vpc_crn.value
+    }
   }
 
 
@@ -138,28 +146,14 @@ dashboard "ibm_is_vpc_detail" {
 
 
   table {
-    title = "Default Route Tables"
-    query = query.ibm_is_vpc_default_route_tables
+    title = "Security Groups"
+    query = query.ibm_is_vpc_security_groups
     args = {
       crn = self.input.vpc_crn.value
     }
   }
 
-  table {
-    title = "Default Security Group"
-    query = query.ibm_is_vpc_default_security_group
-    args = {
-      crn = self.input.vpc_crn.value
-    }
-  }
 
-  table {
-    title = "Default NACL"
-    query = query.ibm_is_vpc_default_network_acl
-    args = {
-      crn = self.input.vpc_crn.value
-    }
-  }
 
 }
 
@@ -265,52 +259,33 @@ query "ibm_is_vpc_subnets_for_vpc" {
   param "crn" {}
 }
 
-query "ibm_is_vpc_default_security_group" {
+query "ibm_is_vpc_security_groups" {
   sql = <<-EOQ
     select
-      default_security_group ->> 'name' as "Name",
-      default_security_group ->> 'id' as "ID",
-      default_security_group ->> 'href' as "HREF"
+      name as "Name",
+      id as "ID",
+      href as "HREF"
     from
-      ibm_is_vpc
+      ibm_is_security_group
     where
-      crn = $1
-    order by
-      default_security_group ->> 'name';
+      vpc ->> 'crn' = $1
   EOQ
 
   param "crn" {}
 }
 
-query "ibm_is_vpc_default_route_tables" {
+query "ibm_is_vpc_network_acl" {
   sql = <<-EOQ
     select
-      default_routing_table ->> 'name' as "Name",
-      default_routing_table ->> 'id' as "ID",
-      default_routing_table ->> 'href' as "HREF"
+      name  as "Name",
+      id as "ID",
+      href as "HREF"
     from
-      ibm_is_vpc
+      ibm_is_network_acl
     where
-      crn = $1
+      vpc ->> 'crn' = $1
     order by
-      default_routing_table -> 'name';
-  EOQ
-
-  param "crn" {}
-}
-
-query "ibm_is_vpc_default_network_acl" {
-  sql = <<-EOQ
-    select
-      default_network_acl ->> 'name' as "Name",
-      default_network_acl ->> 'id' as "ID",
-      default_network_acl ->> 'href' as "HREF"
-    from
-      ibm_is_vpc
-    where
-      crn = $1
-    order by
-      default_network_acl ->> 'name';
+      name;
   EOQ
 
   param "crn" {}
@@ -319,13 +294,14 @@ query "ibm_is_vpc_default_network_acl" {
 query "ibm_is_vpc_overview" {
   sql = <<-EOQ
     select
+      name as "Name",
       id as "ID",
-      title as "Title",
       status as "Status",
+      title as "Title",
+      href as "HREF",
       resource_group ->> 'name' as "Resource Group",
       region as "Region",
       account_id as "Account ID",
-      href as "HREF",
       crn as "CRN"
     from
       ibm_is_vpc
