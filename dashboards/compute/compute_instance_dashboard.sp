@@ -63,19 +63,11 @@ dashboard "ibm_compute_instance_dashboard" {
     }
 
     chart {
-      title = "Instances by Resource Group"
-      sql   = query.ibm_compute_instance_by_resource_group.sql
-      type  = "column"
-      width = 3
-    }
-
-    chart {
       title = "Instances by Region"
       sql   = query.ibm_compute_instance_by_region.sql
       type  = "column"
       width = 3
     }
-
 
     chart {
       title = "Instances by Zone"
@@ -85,8 +77,8 @@ dashboard "ibm_compute_instance_dashboard" {
     }
 
     chart {
-      title = "Instances by Status"
-      sql   = query.ibm_compute_instance_by_status.sql
+      title = "Instances by Resource Group"
+      sql   = query.ibm_compute_instance_by_resource_group.sql
       type  = "column"
       width = 3
     }
@@ -94,6 +86,13 @@ dashboard "ibm_compute_instance_dashboard" {
     chart {
       title = "Instances by Age"
       sql   = query.ibm_compute_instance_by_creation_month.sql
+      type  = "column"
+      width = 3
+    }
+
+    chart {
+      title = "Instances by Status"
+      sql   = query.ibm_compute_instance_by_status.sql
       type  = "column"
       width = 3
     }
