@@ -58,6 +58,10 @@ dashboard "ibm_kms_key_age_report" {
     }
 
     column "Key ID" {
+      display = "none"
+    }
+
+    column "Name" {
       href = "${dashboard.ibm_kms_key_detail.url_path}?input.key_crn={{.CRN | @uri}}"
      }
 
@@ -135,10 +139,9 @@ query "ibm_kms_key_1_year_count" {
 query "ibm_kms_key_age_table" {
   sql = <<-EOQ
     select
-      k.id as "Key ID",
       k.name as "Name",
       now()::date - k.creation_date::date as "Age in Days",
-      k.creation_date as "Creation Date",
+      k.creation_date as "Create Date",
       case
         when k.state = '0' then 'Pre-activation'
         when k.state = '1' then 'Active'
@@ -150,7 +153,8 @@ query "ibm_kms_key_age_table" {
       a.name as "Account",
       k.account_id as "Account ID",
       k.region as "Region",
-      k.crn as "CRN"
+      k.crn as "CRN",
+      k.id as "Key ID"
     from
       ibm_kms_key as k,
       ibm_account as a
@@ -158,6 +162,6 @@ query "ibm_kms_key_age_table" {
       k.account_id = a.customer_id
       and k.state <> '5'
     order by
-      k.id;
+      k.name;
   EOQ
 }
