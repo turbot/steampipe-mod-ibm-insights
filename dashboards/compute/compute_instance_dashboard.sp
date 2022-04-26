@@ -63,18 +63,19 @@ dashboard "ibm_compute_instance_dashboard" {
     }
 
     chart {
+      title = "Instances by Resource Group"
+      sql   = query.ibm_compute_instance_by_resource_group.sql
+      type  = "column"
+      width = 3
+    }
+
+    chart {
       title = "Instances by Region"
       sql   = query.ibm_compute_instance_by_region.sql
       type  = "column"
       width = 3
     }
 
-    chart {
-      title = "Instances by Resource Group"
-      sql   = query.ibm_compute_instance_by_resource_group.sql
-      type  = "column"
-      width = 3
-    }
 
     chart {
       title = "Instances by Zone"
@@ -119,7 +120,7 @@ query "ibm_compute_instance_count" {
 query "ibm_compute_instance_total_vcpu" {
   sql = <<-EOQ
     select
-      sum((vcpu ->> 'count')::int) as "Total vCPU"
+      sum((vcpu ->> 'count')::int) as "Total vCPUs"
     from
       ibm_is_instance;
   EOQ

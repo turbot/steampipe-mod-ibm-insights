@@ -47,7 +47,6 @@ dashboard "ibm_compute_instance_detail" {
       }
     }
 
-
     card {
       width = 2
       query = query.ibm_compute_instance_architecture
@@ -55,6 +54,15 @@ dashboard "ibm_compute_instance_detail" {
         crn = self.input.instance_crn.value
       }
     }
+
+    card {
+      width = 2
+      query = query.ibm_compute_public_instance
+      args  = {
+        crn = self.input.instance_crn.value
+      }
+    }
+
   }
 
   container {
@@ -202,7 +210,7 @@ query "ibm_compute_instance_status" {
 query "ibm_compute_instance_total_vcpu_count" {
   sql = <<-EOQ
     select
-      'Total vCPU' as label,
+      'Total vCPUs' as label,
       sum((vcpu ->> 'count')::int) as value
     from
       ibm_is_instance
@@ -226,7 +234,6 @@ query "ibm_compute_instance_memory" {
 
   param "crn" {}
 }
-
 
 query "ibm_compute_instance_bandwidth" {
   sql = <<-EOQ
@@ -256,6 +263,20 @@ query "ibm_compute_instance_architecture" {
   param "crn" {}
 }
 
+query "ibm_compute_public_instance" {
+  sql = <<-EOQ
+    select
+      'Public Access' as label,
+      case when jsonb_array_length(floating_ips) <> 0 then 'Enabled' else 'Disabled' end as value,
+      case When jsonb_array_length(floating_ips) <> 0 then 'alert' else 'ok' end as "type"
+    from
+      ibm_is_instance
+    where
+      crn = $1
+  EOQ
+
+  param "crn" {}
+}
 
 query "ibm_compute_instance_image" {
   sql = <<-EOQ
@@ -337,7 +358,7 @@ query "ibm_compute_instance_disks" {
       d ->> 'size' as "Size",
       d ->> 'interface_type' as "Interface Type",
       d ->> 'resource_type' as "Resource Type",
-      d ->> 'created_at' as "Created At",
+      d ->> 'created_at' as "Create Time",
       d ->> 'href' as "HREF"
     from
       ibm_is_instance,

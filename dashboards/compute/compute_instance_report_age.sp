@@ -52,11 +52,15 @@ dashboard "ibm_compute_instance_age_report" {
       display = "none"
     }
 
+    column "ID" {
+      display = "none"
+    }
+
     column "CRN" {
       display = "none"
     }
 
-    column "ID" {
+    column "Name" {
       href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
     }
     sql = query.ibm_compute_instance_age_table.sql
@@ -127,21 +131,21 @@ query "ibm_compute_instance_1_year_count" {
 query "ibm_compute_instance_age_table" {
   sql = <<-EOQ
     select
-      i.id as "ID",
       i.name as "Name",
       now()::date - i.created_at::date as "Age in Days",
-      i.created_at as "Created At",
+      i.created_at as "Create Time",
       i.status as "Status",
       a.name as "Account",
       i.account_id as "Account ID",
       i.region as "Region",
-      i.crn as "CRN"
+      i.crn as "CRN",
+      i.id as "ID"
     from
       ibm_is_instance as i,
       ibm_account as a
     where
       i.account_id = a.customer_id
     order by
-      i.id;
+      i.name;
   EOQ
 }
