@@ -376,23 +376,22 @@ query "ibm_inbound_nacl_for_vpc_sankey" {
 
         case when e ->> 'action' = 'allow' then 'Allow ' else 'Deny ' end ||
           case
-              when e ->>'protocol' = 'all' then 'All Traffic'
-              when e ->>'protocol' = 'icmp' then 'All ICMP'
-              when e ->>'protocol' = 'udp' and e ->> 'source_port_min' = '1' and e ->> 'source_port_max' = '65535'
-                then 'All UDP'
-              when e ->>'protocol' = 'tcp' and e ->>'source_port_min' = '1' and e ->>'source_port_max' = '65535'
-                then  'All TCP'
-              when e ->>'protocol' = 'tcp' and e ->> 'source_port_min' = e ->> 'source_port_max'
-                then  concat(e ->> 'source_port_min', '/TCP')
-              when e->>'protocol' = 'udp' and e ->> 'source_port_min'  = e ->> 'source_port_max'
-                then  concat(e->> 'source_port_min', '/UDP')
-              when e->>'protocol' = 'tcp' and e ->> 'source_port_min' <> e->> 'source_port_max'
-                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/TCP')
-              when e->>'protocol' = 'udp' and e ->> 'source_port_min' <> e->> 'source_port_max'
-                then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/udp')
-              else concat('Procotol: ', e->>'protocol')
+            when e ->>'protocol' = 'all' then 'All Traffic'
+            when e ->>'protocol' = 'icmp' then 'All ICMP'
+            when e ->>'protocol' = 'udp' and e ->> 'source_port_min' = '1' and e ->> 'source_port_max' = '65535'
+              then 'All UDP'
+            when e ->>'protocol' = 'tcp' and e ->>'source_port_min' = '1' and e ->>'source_port_max' = '65535'
+              then  'All TCP'
+            when e ->>'protocol' = 'tcp' and e ->> 'source_port_min' = e ->> 'source_port_max'
+              then  concat(e ->> 'source_port_min', '/TCP')
+            when e->>'protocol' = 'udp' and e ->> 'source_port_min'  = e ->> 'source_port_max'
+              then  concat(e->> 'source_port_min', '/UDP')
+            when e->>'protocol' = 'tcp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+              then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/TCP')
+            when e->>'protocol' = 'udp' and e ->> 'source_port_min' <> e->> 'source_port_max'
+              then  concat(e ->> 'source_port_min', '-', e ->> 'source_port_max', '/udp')
+            else concat('Procotol: ', e->>'protocol')
         end as rule_description,
-
         a ->> 'id' as subnet_id
       from
         ibm_is_network_acl,
@@ -423,21 +422,21 @@ query "ibm_inbound_nacl_for_vpc_sankey" {
 
     -- ACL Nodes
     union select
-      distinct network_acl_id as id,
-      network_acl_id as title,
+      distinct s.network_acl_id as id,
+      acl.name as title,
       'nacl' as category,
       null as from_id,
       null as to_id
-    from aces
+    from aces as s left join ibm_is_network_acl as acl on s.network_acl_id = acl.id
 
     -- Subnet node
     union select
-      distinct subnet_id as id,
-      subnet_id as title,
+      distinct a.subnet_id as id,
+      s.name as title,
       'subnet' as category,
       null as from_id,
       null as to_id
-    from aces
+    from aces as a left join ibm_is_subnet as s on s.id = a.subnet_id
 
     -- ip -> rule edge
     union select
@@ -513,24 +512,23 @@ query "ibm_outbound_nacl_for_vpc_sankey" {
 
     -- Subnet Nodes
     select
-      distinct subnet_id as id,
-      subnet_id as title,
+      distinct a.subnet_id as id,
+      s.name as title,
       'subnet' as category,
       null as from_id,
       null as to_id,
       0 as depth
-    from aces
+    from aces as a left join ibm_is_subnet as s on s.id = a.subnet_id
 
     -- ACL Nodes
     union select
-      distinct network_acl_id as id,
-      network_acl_id as title,
+      distinct s.network_acl_id as id,
+      acl.name as title,
       'nacl' as category,
       null as from_id,
       null as to_id,
       1 as depth
-
-    from aces
+    from aces as s left join ibm_is_network_acl as acl on s.network_acl_id = acl.id
 
     -- Rule Nodes
     union select
