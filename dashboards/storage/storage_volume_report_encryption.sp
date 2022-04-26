@@ -37,12 +37,12 @@ dashboard "ibm_is_volume_encryption_report" {
       display = "none"
     }
 
-    # column "Name" {
-    #   href = "${dashboard.ibm_is_volume_detail.url_path}?input.server_id={{.ID | @uri}}"
-    # }
-
-    column "Subscription ID" {
+    column "ID" {
       display = "none"
+    }
+
+    column "Name" {
+      href = "${dashboard.ibm_is_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
     }
 
     query = query.ibm_is_volume_encryption_report
@@ -53,7 +53,6 @@ dashboard "ibm_is_volume_encryption_report" {
 query "ibm_is_volume_encryption_report" {
   sql = <<-EOQ
     select
-      v.id as "ID",
       v.name as "Name",
       v.encryption as "Encryption Type",
       v.encryption_key as "Encryption Key",
@@ -62,14 +61,15 @@ query "ibm_is_volume_encryption_report" {
       v.resource_group ->> 'name' as "Resource Group",
       v.zone ->> 'name' as "Zone",
       v.region as "Region",
-      v.crn as "CRN"
+      v.crn as "CRN",
+      v.id as "ID"
     from
       ibm_is_volume as v,
       ibm_account as a
     where
       v.account_id = a.customer_id
     order by
-      v.id;
+      v.name;
   EOQ
 }
 

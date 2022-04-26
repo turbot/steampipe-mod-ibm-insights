@@ -56,9 +56,13 @@ dashboard "ibm_is_volume_age_report" {
       display = "none"
     }
 
-    # column "ID" {
-    #   href = "${dashboard.ibm_is_volume_detail.url_path}?input.volume_arn={{.ARN | @uri}}"
-    # }
+    column "ID" {
+      display = "none"
+    }
+
+    column "Name" {
+      href = "${dashboard.ibm_is_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
+    }
 
     sql = query.ibm_is_volume_age_table.sql
   }
@@ -131,7 +135,6 @@ query "ibm_is_volume_1_year_count" {
 query "ibm_is_volume_age_table" {
   sql = <<-EOQ
     select
-      v.id as "ID",
       v.name as "Name",
       now()::date - v.created_at::date as "Age in Days",
       v.created_at as "Create Time",
@@ -140,13 +143,14 @@ query "ibm_is_volume_age_table" {
       v.account_id as "Account ID",
       v.region as "Region",
       v.zone ->> 'name' as "Zone",
-      v.crn as "CRN"
+      v.crn as "CRN",
+      v.id as "ID"
     from
       ibm_is_volume as v,
       ibm_account as a
     where
       v.account_id = a.customer_id
     order by
-      v.id;
+      v.name;
   EOQ
 }

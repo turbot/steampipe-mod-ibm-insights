@@ -1,7 +1,7 @@
 dashboard "ibm_is_volume_dashboard" {
 
   title         = "IBM Block Storage Volume Dashboard"
-  #documentation = file("./dashboards/ebs/docs/ebs_volume_dashboard.md")
+  documentation = file("./dashboards/storage/docs/storage_volume_dashboard.md")
 
   tags = merge(local.storage_common_tags, {
     type = "Dashboard"
@@ -164,7 +164,7 @@ query "ibm_is_volume_count" {
 query "ibm_is_volume_storage_total" {
   sql = <<-EOQ
     select
-      sum(capacity) as "Total Storage (GB)"
+      sum(capacity) as "Total Capacity (GB)"
     from
       ibm_is_volume;
   EOQ
