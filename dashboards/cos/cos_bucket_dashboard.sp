@@ -16,11 +16,6 @@ dashboard "ibm_cos_bucket_dashboard" {
     }
 
     # Assessments
-    # card {
-    #   sql   = query.aws_s3_bucket_public_block_count.sql
-    #   width = 2
-    #   href  = dashboard.aws_s3_bucket_public_access_report.url_path
-    # }
 
     card {
       sql   = query.ibm_cos_bucket_unencrypted_count.sql
@@ -239,7 +234,7 @@ query "ibm_cos_bucket_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
-      count(b.*) as "Disks"
+      count(b.*) as "Buckets"
     from
       ibm_cos_bucket as b,
       ibm_account as a

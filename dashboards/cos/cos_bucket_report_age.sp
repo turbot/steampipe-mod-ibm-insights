@@ -48,6 +48,11 @@ dashboard "ibm_cos_bucket_age_report" {
   }
 
   table {
+
+    column "Name" {
+      href = "${dashboard.ibm_cos_bucket_detail.url_path}?input.bucket_name={{.Name | @uri}}"
+    }
+
     sql = query.ibm_cos_bucket_age_table.sql
   }
 
