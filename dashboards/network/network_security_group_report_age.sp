@@ -56,6 +56,14 @@ dashboard "ibm_is_security_group_age_report" {
       display = "none"
     }
 
+    column "ID" {
+      display = "none"
+    }
+
+    column "Name" {
+      href = "${dashboard.ibm_is_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
+    }
+
     sql = query.ibm_is_security_group_age_table.sql
   }
 
@@ -127,14 +135,14 @@ query "ibm_is_security_group_1_year_count" {
 query "ibm_is_security_group_age_table" {
   sql = <<-EOQ
     select
-      sg.id as "ID",
       sg.name as "Name",
       now()::date - sg.created_at::date as "Age in Days",
-      sg.created_at as "Created At",
+      sg.created_at as "Create Time",
       a.name as "Account",
       sg.account_id as "Account ID",
       sg.region as "Region",
-      sg.crn as "CRN"
+      sg.crn as "CRN",
+      sg.id as "ID"
     from
       ibm_is_security_group as sg,
       ibm_account as a

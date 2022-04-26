@@ -112,15 +112,15 @@ dashboard "ibm_is_security_group_dashboard" {
     }
 
     chart {
-      title = "Security Groups by VPC"
-      sql = query.ibm_is_security_group_by_vpc.sql
+      title = "Security Groups by Age"
+      sql = query.ibm_is_security_group_by_creation_month.sql
       type  = "column"
       width = 4
     }
 
     chart {
-      title = "Security Groups by Age"
-      sql = query.ibm_is_security_group_by_creation_month.sql
+      title = "Security Groups by VPC"
+      sql = query.ibm_is_security_group_by_vpc.sql
       type  = "column"
       width = 4
     }
