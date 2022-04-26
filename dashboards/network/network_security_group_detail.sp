@@ -106,6 +106,15 @@ dashboard "ibm_is_security_group_detail" {
 
     width = 6
 
+    flow {
+      base = flow.security_group_rules_sankey
+      title = "Inbound Analysis"
+      query = query.ibm_is_security_group_inbound_rule_sankey
+      args  = {
+        crn = self.input.security_group_crn.value
+      }
+    }
+
     table {
       title = "Inbound Rules"
       query = query.ibm_is_security_group_inbound_rules
@@ -120,6 +129,15 @@ dashboard "ibm_is_security_group_detail" {
 
     width = 6
 
+    flow {
+      base = flow.security_group_rules_sankey
+      title = "Outbound Analysis"
+      query = query.ibm_is_security_group_outbound_rule_sankey
+      args  = {
+        crn = self.input.security_group_crn.value
+      }
+    }
+
     table {
       title = "Outbound Rules"
       query = query.ibm_is_security_group_outbound_rules
@@ -131,6 +149,21 @@ dashboard "ibm_is_security_group_detail" {
   }
 
 }
+
+
+flow "security_group_rules_sankey" {
+    type  = "sankey"
+
+    category "alert" {
+      color = "alert"
+    }
+
+    category "ok" {
+      color = "ok"
+    }
+
+  }
+
 
 query "ibm_is_security_group_input" {
   sql = <<-EOQ
@@ -311,9 +344,9 @@ query "ibm_is_security_group_overview" {
       id as "ID",
       vpc ->> 'id' as  "VPC ID",
       resource_group ->> 'name' as "Resource Group",
+      href as "HREF",
       region as "Region",
       account_id as "Account ID",
-      href as "HREF",
       crn as "CRN"
     from
       ibm_is_security_group
@@ -323,7 +356,6 @@ query "ibm_is_security_group_overview" {
 
   param "crn" {}
 }
-
 
 query "ibm_is_security_group_association" {
   sql = <<-EOQ
@@ -340,6 +372,250 @@ query "ibm_is_security_group_association" {
   EOQ
 
   param "crn" {}
+}
+
+query "ibm_is_security_group_inbound_rule_sankey" {
+  sql = <<-EOQ
+
+    with associations as (
+      select
+        name,
+        t ->> 'name' as resource_name,
+        t ->> 'id' as resource_id,
+        id as group_id,
+        t ->> 'resource_type' as category
+      from
+        ibm_is_security_group,
+        jsonb_array_elements(targets) as t
+      where
+        crn = $1
+      ),
+      rules as (
+        select
+          concat((r -> 'remote' ->> 'cidr_block'), (r -> 'remote' ->> 'name'), (r -> 'remote' ->> 'address')) as source,
+          id as group_id,
+          name as group_name,
+          case
+            when r ->>'protocol' = 'all' then 'All Traffic'
+            when r ->>'protocol' = 'icmp' then 'All ICMP'
+            when r ->>'protocol' = 'udp' and r ->> 'port_min' = '1' and r ->> 'port_max' = '65535' then 'All UDP'
+            when r ->>'protocol' = 'tcp' and r ->>'port_min' = '1' and r ->>'port_max' = '65535' then  'All TCP'
+            when r ->> 'port_min' is not null
+            and r ->> 'port_max' is not null
+            and r ->> 'port_min' = r ->>'port_max' then concat((r ->>'port_min'), '/', (r ->>'protocol'))
+            else concat(
+              (r ->>'port_min'),
+              '-',
+              (r ->>'port_max' ),
+              '/',
+              (r ->>'protocol')
+            )
+          end as port_proto,
+          case
+            when (r -> 'remote' ->> 'cidr_block' = '0.0.0.0/0')
+                and r ->>'protocol' <> 'icmp'
+                and
+                  ((r ->>'port_min') = '1' and (r ->>'port_max') = '65535')
+                then 'alert'
+            else 'ok'
+          end as category
+        from
+          ibm_is_security_group,
+          jsonb_array_elements(rules) as r
+        where
+          crn = $1
+          and r ->> 'direction' = 'inbound'
+          )
+
+      -- Nodes  ---------
+
+      select
+        distinct concat('src_',source) as id,
+        source as title,
+        0 as depth,
+        'source' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+      union
+      select
+        distinct port_proto as id,
+        port_proto as title,
+        1 as depth,
+        'port_proto' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+      union
+      select
+        distinct group_id as id,
+        group_name as title,
+        2 as depth,
+        'security_group' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+      union
+      select
+          distinct resource_id as id,
+          resource_name || '(' || category || ')' as title,
+          3 as depth,
+          category,
+          group_id as from_id,
+          null as to_id
+        from
+          associations
+
+      -- Edges  ---------
+      union select
+        null as id,
+        null as title,
+        null as depth,
+        category,
+        concat('src_',source) as from_id,
+        port_proto as to_id
+      from
+        rules
+
+      union select
+        null as id,
+        null as title,
+        null as depth,
+        category,
+        port_proto as from_id,
+        group_id as to_id
+      from
+        rules
+  EOQ
+
+  param "crn" {}
+}
+
+query "ibm_is_security_group_outbound_rule_sankey" {
+  sql = <<-EOQ
+
+    with associations as (
+      select
+        t ->> 'name' as resource_name,
+        t ->> 'id' as resource_id,
+        id as group_id,
+        t ->> 'resource_type' as category
+      from
+        ibm_is_security_group,
+        jsonb_array_elements(targets) as t
+      where
+        crn = $1
+      ),
+      rules as (
+        select
+          concat((r -> 'remote' ->> 'cidr_block'), (r -> 'remote' ->> 'name'),(r -> 'remote' ->> 'address')) as source,
+          id as group_id,
+          name as group_name,
+          case
+            when r ->>'protocol' = 'all' then 'All Traffic'
+            when r ->>'protocol' = 'icmp' then 'All ICMP'
+            when r ->>'protocol' = 'udp' and r ->> 'port_min' = '1' and r ->> 'port_max' = '65535' then 'All UDP'
+            when r ->>'protocol' = 'tcp' and r ->>'port_min' = '1' and r ->>'port_max' = '65535' then  'All TCP'
+            when r ->> 'port_min' is not null
+            and r ->> 'port_max' is not null
+            and r ->> 'port_min' = r ->>'port_max' then concat((r ->>'port_min'), '/', (r ->>'protocol'))
+            else concat(
+              (r ->>'port_min'),
+              '-',
+              (r ->>'port_max' ),
+              '/',
+              (r ->>'protocol')
+            )
+          end as port_proto,
+          case
+            when (r -> 'remote' ->> 'cidr_block' = '0.0.0.0/0')
+                and r ->>'protocol' <> 'icmp'
+                and
+                  ((r ->>'port_min') = '1' and (r ->>'port_max') = '65535')
+                then 'alert'
+            else 'ok'
+          end as category
+        from
+          ibm_is_security_group,
+          jsonb_array_elements(rules) as r
+        where
+          crn = $1
+          and r ->> 'direction' = 'outbound'
+          )
+
+      -- Nodes  ---------
+
+      select
+        distinct concat('src_',source) as id,
+        source as title,
+        3 as depth,
+        'source' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+      union
+      select
+        distinct port_proto as id,
+        port_proto as title,
+        2 as depth,
+        'port_proto' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+   union
+      select
+        distinct group_id as id,
+        group_name as title,
+        1 as depth,
+        'security_group' as category,
+        null as from_id,
+        null as to_id
+      from
+        rules
+
+      union
+      select
+        distinct resource_id as id,
+        resource_name || '(' || category || ')' as title,
+        0 as depth,
+        category,
+        group_id as from_id,
+        null as to_id
+      from
+        associations
+
+      -- Edges  ---------
+      union select
+        null as id,
+        null as title,
+        null as depth,
+        category,
+        concat('src_',source) as from_id,
+        port_proto as to_id
+      from
+        rules
+
+      union select
+        null as id,
+        null as title,
+        null as depth,
+        category,
+        port_proto as from_id,
+        group_id as to_id
+      from
+        rules
+  EOQ
+    param "crn" {}
 }
 
 query "ibm_is_security_group_tags" {
