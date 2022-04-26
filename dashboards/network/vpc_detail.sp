@@ -268,10 +268,9 @@ query "ibm_is_vpc_subnets_for_vpc" {
 query "ibm_is_vpc_default_security_group" {
   sql = <<-EOQ
     select
-      default_security_group ->> 'name' as "Group Name",
-      default_security_group ->> 'id' as "Group ID",
-      default_security_group ->> 'href' as "HREF",
-      default_security_group ->> 'crn' as "CRN"
+      default_security_group ->> 'name' as "Name",
+      default_security_group ->> 'id' as "ID",
+      default_security_group ->> 'href' as "HREF"
     from
       ibm_is_vpc
     where
@@ -286,8 +285,8 @@ query "ibm_is_vpc_default_security_group" {
 query "ibm_is_vpc_default_route_tables" {
   sql = <<-EOQ
     select
-      default_routing_table ->> 'name' as "Route Table Name",
-      default_routing_table ->> 'id' as "Route Table ID",
+      default_routing_table ->> 'name' as "Name",
+      default_routing_table ->> 'id' as "ID",
       default_routing_table ->> 'href' as "HREF"
     from
       ibm_is_vpc
@@ -305,8 +304,7 @@ query "ibm_is_vpc_default_network_acl" {
     select
       default_network_acl ->> 'name' as "Name",
       default_network_acl ->> 'id' as "ID",
-      default_network_acl ->> 'href' as "HREF",
-      default_network_acl ->> 'crn' as "CRN"
+      default_network_acl ->> 'href' as "HREF"
     from
       ibm_is_vpc
     where

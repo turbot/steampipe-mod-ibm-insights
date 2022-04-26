@@ -56,6 +56,10 @@ dashboard "ibm_is_vpc_age_report" {
       display = "none"
     }
 
+    column "Name" {
+      href = "${dashboard.ibm_is_vpc_detail.url_path}?input.vpc_crn={{.CRN | @uri}}"
+    }
+
     sql = query.ibm_is_vpc_age_table.sql
   }
 
@@ -129,7 +133,7 @@ query "ibm_is_vpc_age_table" {
     select
       v.name as "Name",
       now()::date - v.created_at::date as "Age in Days",
-      v.created_at as "Created At",
+      v.created_at as "Create Time",
       v.status as "Status",
       a.name as "Account",
       v.account_id as "Account ID",
