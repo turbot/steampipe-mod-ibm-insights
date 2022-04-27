@@ -1,9 +1,9 @@
 dashboard "ibm_is_volume_age_report" {
 
   title         = "IBM Block Storage Volume Age Report"
-  documentation = file("./dashboards/storage/docs/storage_volume_report_age.md")
+  documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_report_age.md")
 
-  tags = merge(local.storage_common_tags, {
+  tags = merge(local.blockstorage_common_tags, {
     type     = "Report"
     category = "Age"
   })

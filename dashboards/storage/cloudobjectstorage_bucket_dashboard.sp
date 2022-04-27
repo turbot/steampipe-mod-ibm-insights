@@ -1,9 +1,9 @@
 dashboard "ibm_cos_bucket_dashboard" {
 
   title         = "IBM Cloud Object Storage Bucket Dashboard"
-  documentation = file("./dashboards/cloudobjectstorage/docs/cloudobjectstorage_bucket_dashboard.md")
+  documentation = file("./dashboards/storage/docs/cloudobjectstorage_bucket_dashboard.md")
 
-  tags = merge(local.cos_common_tags, {
+  tags = merge(local.storage_common_tags, {
     type = "Dashboard"
   })
 
@@ -38,7 +38,7 @@ dashboard "ibm_cos_bucket_dashboard" {
     title = "Assessments"
     width = 6
 
-     chart {
+    chart {
       title = "Encryption Status"
       sql   = query.ibm_cos_bucket_encryption_status.sql
       type  = "donut"

@@ -1,9 +1,9 @@
 dashboard "ibm_is_volume_detail" {
 
   title         = "IBM Block Storage Volume Detail"
-  documentation = file("./dashboards/storage/docs/storage_volume_detail.md")
+  documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_detail.md")
 
-  tags = merge(local.storage_common_tags, {
+  tags = merge(local.blockstorage_common_tags, {
     type = "Detail"
   })
 
@@ -18,7 +18,7 @@ dashboard "ibm_is_volume_detail" {
     card {
       width = 2
       query = query.ibm_is_volume_storage
-      args  = {
+      args = {
         crn = self.input.volume_crn.value
       }
     }
@@ -26,7 +26,7 @@ dashboard "ibm_is_volume_detail" {
     card {
       width = 2
       query = query.ibm_is_volume_iops
-      args  = {
+      args = {
         crn = self.input.volume_crn.value
       }
     }
@@ -34,7 +34,7 @@ dashboard "ibm_is_volume_detail" {
     card {
       width = 2
       query = query.ibm_is_volume_attached_instances_count
-      args  = {
+      args = {
         crn = self.input.volume_crn.value
       }
     }
@@ -53,7 +53,7 @@ dashboard "ibm_is_volume_detail" {
         type  = "line"
         width = 6
         query = query.ibm_is_volume_overview
-        args  = {
+        args = {
           crn = self.input.volume_crn.value
         }
       }
@@ -62,7 +62,7 @@ dashboard "ibm_is_volume_detail" {
         title = "Tags"
         width = 6
         query = query.ibm_is_volume_tags
-        args  = {
+        args = {
           crn = self.input.volume_crn.value
         }
       }
@@ -75,7 +75,7 @@ dashboard "ibm_is_volume_detail" {
       table {
         title = "Attached To"
         query = query.ibm_is_volume_attached_instances
-        args  = {
+        args = {
           crn = self.input.volume_crn.value
         }
 
@@ -88,7 +88,7 @@ dashboard "ibm_is_volume_detail" {
         title = "Encryption Details"
 
         query = query.ibm_is_volume_encryption_status
-        args  = {
+        args = {
           crn = self.input.volume_crn.value
         }
       }

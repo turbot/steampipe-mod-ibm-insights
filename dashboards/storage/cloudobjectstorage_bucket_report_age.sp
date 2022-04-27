@@ -1,9 +1,9 @@
 dashboard "ibm_cos_bucket_age_report" {
 
   title         = "IBM Cloud Object Storage Bucket Age Report"
-  documentation = file("./dashboards/cloudobjectstorage/docs/cloudobjectstorage_report_age.md")
+  documentation = file("./dashboards/storage/docs/cloudobjectstorage_report_age.md")
 
-  tags = merge(local.cos_common_tags, {
+  tags = merge(local.storage_common_tags, {
     type     = "Report"
     category = "Age"
   })
