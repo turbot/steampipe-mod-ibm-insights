@@ -141,6 +141,7 @@ query "ibm_is_security_group_age_table" {
       a.name as "Account",
       sg.account_id as "Account ID",
       sg.region as "Region",
+      sg.resource_group ->> 'name' as "Resource Group",
       sg.crn as "CRN",
       sg.id as "ID"
     from

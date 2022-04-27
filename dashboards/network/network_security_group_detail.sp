@@ -342,9 +342,9 @@ query "ibm_is_security_group_overview" {
     select
       name as "Name",
       id as "ID",
-      vpc ->> 'id' as  "VPC ID",
-      resource_group ->> 'name' as "Resource Group",
+      vpc ->> 'id' as "VPC ID",
       href as "HREF",
+      resource_group ->> 'name' as "Resource Group",
       region as "Region",
       account_id as "Account ID",
       crn as "CRN"
