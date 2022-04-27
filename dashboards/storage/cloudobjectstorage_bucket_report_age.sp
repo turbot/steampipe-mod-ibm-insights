@@ -1,4 +1,4 @@
-dashboard "ibm_cos_bucket_age_report" {
+dashboard "ibm_cloudobjectstorage_bucket_age_report" {
 
   title         = "IBM Cloud Object Storage Bucket Age Report"
   documentation = file("./dashboards/storage/docs/cloudobjectstorage_report_age.md")
@@ -49,9 +49,9 @@ dashboard "ibm_cos_bucket_age_report" {
 
   table {
 
-    column "Name" {
-      href = "${dashboard.ibm_cos_bucket_detail.url_path}?input.bucket_name={{.Name | @uri}}"
-    }
+    # column "Name" {
+    #   href = "${dashboard.ibm_cloudobjectstorage_bucket_detail.url_path}?input.bucket_name={{.Name | @uri}}"
+    # }
 
     sql = query.ibm_cos_bucket_age_table.sql
   }

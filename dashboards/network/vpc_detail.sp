@@ -1,4 +1,4 @@
-dashboard "ibm_is_vpc_detail" {
+dashboard "ibm_vpc_detail" {
 
   title = "IBM VPC Detail"
   documentation = file("./dashboards/network/docs/vpc_detail.md")
@@ -151,10 +151,15 @@ dashboard "ibm_is_vpc_detail" {
     args = {
       crn = self.input.vpc_crn.value
     }
+
+    column "CRN" {
+      display = "none"
+    }
+
+    column "Name" {
+      href = "${dashboard.ibm_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
+    }
   }
-
-
-
 }
 
 flow "nacl_flow" {
@@ -264,7 +269,8 @@ query "ibm_is_vpc_security_groups" {
     select
       name as "Name",
       id as "ID",
-      href as "HREF"
+      href as "HREF",
+      crn as "CRN"
     from
       ibm_is_security_group
     where

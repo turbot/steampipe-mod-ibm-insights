@@ -1,4 +1,4 @@
-dashboard "ibm_cos_bucket_dashboard" {
+dashboard "ibm_cloudobjectstorage_bucket_dashboard" {
 
   title         = "IBM Cloud Object Storage Bucket Dashboard"
   documentation = file("./dashboards/storage/docs/cloudobjectstorage_bucket_dashboard.md")

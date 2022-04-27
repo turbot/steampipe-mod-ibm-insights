@@ -36,15 +36,16 @@ query "ibm_account_count" {
 query "ibm_account_table" {
   sql = <<-EOQ
     select
-      name as "Name",
-      customer_id as "Customer ID",
-      owner_user_id as "Owner User ID",
-      owner_unique_id as "Owner Unique ID",
-      organizations as "Organizations",
-      state as "State",
-      type as "Type"
+      a.name as "Name",
+      a.customer_id as "Customer ID",
+      a.owner_user_id as "Owner User ID",
+      a.owner_unique_id as "Owner Unique ID",
+      a.organizations as "Organizations",
+      s.mfa as "MFA",
+      a.state as "State",
+      a.type as "Type"
     from
-      ibm_account
+      ibm_account as a left join ibm_iam_account_settings s on a.customer_id = s.account_id
     order by
       name;
   EOQ

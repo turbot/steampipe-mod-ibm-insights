@@ -1,7 +1,7 @@
-dashboard "ibm_is_security_group_age_report" {
+dashboard "ibm_security_group_age_report" {
 
   title         = "IBM Security Group Age Report"
-  documentation = file("./dashboards/network/docs/network_security_group_report_age.md")
+  documentation = file("./dashboards/network/docs/security_group_report_age.md")
 
   tags = merge(local.network_common_tags, {
     type     = "Report"
@@ -61,7 +61,7 @@ dashboard "ibm_is_security_group_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_is_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
+      href = "${dashboard.ibm_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
     }
 
     sql = query.ibm_is_security_group_age_table.sql

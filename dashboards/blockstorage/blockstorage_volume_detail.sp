@@ -1,4 +1,4 @@
-dashboard "ibm_is_volume_detail" {
+dashboard "ibm_blockstorage_volume_detail" {
 
   title         = "IBM Block Storage Volume Detail"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_detail.md")
@@ -81,6 +81,10 @@ dashboard "ibm_is_volume_detail" {
 
         column "Instance CRN" {
           display = "none"
+        }
+
+        column "Instance Name" {
+          href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.'Instance CRN' | @uri}}"
         }
       }
 
@@ -194,8 +198,8 @@ query "ibm_is_volume_encryption" {
 query "ibm_is_volume_attached_instances" {
   sql = <<-EOQ
     select
-      a -> 'instance' ->> 'id' as "Instance ID",
       a -> 'instance' ->> 'name' as "Instance Name",
+      a -> 'instance' ->> 'id' as "Instance ID",
       a -> 'delete_volume_on_instance_delete' as "Delete Volume On Instance Delete",
       a -> 'instance' ->> 'crn' as "Instance CRN"
     from

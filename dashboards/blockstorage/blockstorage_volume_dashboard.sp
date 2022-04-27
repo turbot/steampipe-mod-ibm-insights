@@ -1,4 +1,4 @@
-dashboard "ibm_is_volume_dashboard" {
+dashboard "ibm_blockstorage_volume_dashboard" {
 
   title         = "IBM Block Storage Volume Dashboard"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_dashboard.md")
@@ -10,7 +10,7 @@ dashboard "ibm_is_volume_dashboard" {
   container {
 
     # Analysis
-    
+
     card {
       sql   = query.ibm_is_volume_count.sql
       width = 2
