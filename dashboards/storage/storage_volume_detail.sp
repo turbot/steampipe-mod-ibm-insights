@@ -227,16 +227,16 @@ query "ibm_is_volume_encryption_status" {
 query "ibm_is_volume_overview" {
   sql = <<-EOQ
     select
-      id as "ID",
       name as "Name",
+      id as "ID",
       status as "Status",
       title as "Title",
-      zone ->> 'name' as "Zone",
+      href as "HREF",
       resource_group ->> 'name' as "Resource Group",
+      zone ->> 'name' as "Zone",
       region as "Region",
       account_id as "Account ID",
-      href as "HREF",
-      crn as "crn"
+      crn as "CRN"
     from
       ibm_is_volume
     where

@@ -58,9 +58,9 @@ query "ibm_is_volume_encryption_report" {
       v.encryption_key as "Encryption Key",
       a.name as "Account",
       v.account_id as "Account ID",
-      v.resource_group ->> 'name' as "Resource Group",
-      v.zone ->> 'name' as "Zone",
       v.region as "Region",
+      v.zone ->> 'name' as "Zone",
+      v.resource_group ->> 'name' as "Resource Group",
       v.crn as "CRN",
       v.id as "ID"
     from

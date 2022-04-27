@@ -114,7 +114,7 @@ dashboard "ibm_is_volume_dashboard" {
     }
 
     chart {
-      title = "Storage by Region"
+      title = "Storage by Region (GB)"
       sql   = query.ibm_is_volume_storage_by_region.sql
       type  = "column"
       width = 3
