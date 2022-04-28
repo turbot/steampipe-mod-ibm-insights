@@ -1,9 +1,9 @@
-dashboard "ibm_cos_bucket_lifecycle_report" {
+dashboard "ibm_cloudobjectstorage_bucket_lifecycle_report" {
 
   title         = "IBM Cloud Object Storage Bucket Lifecycle Report"
-  documentation = file("./dashboards/cloudobjectstorage/docs/cloudobjectstorage_bucket_report_lifecycle.md")
+  documentation = file("./dashboards/storage/docs/cloudobjectstorage_bucket_report_lifecycle.md")
 
-  tags = merge(local.cos_common_tags, {
+  tags = merge(local.storage_common_tags, {
     type     = "Report"
     category = "Lifecycle"
   })
@@ -28,6 +28,10 @@ dashboard "ibm_cos_bucket_lifecycle_report" {
   }
 
   table {
+
+    # column "Name" {
+    #   href = "${dashboard.ibm_cloudobjectstorage_bucket_detail.url_path}?input.bucket_name={{.Name | @uri}}"
+    # }
 
     sql = query.ibm_cos_bucket_lifecycle_table.sql
   }

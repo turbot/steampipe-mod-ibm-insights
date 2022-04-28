@@ -1,4 +1,4 @@
-dashboard "ibm_is_vpc_age_report" {
+dashboard "ibm_vpc_age_report" {
 
   title         = "IBM VPC Age Report"
   documentation = file("./dashboards/network/docs/vpc_report_age.md")
@@ -57,7 +57,7 @@ dashboard "ibm_is_vpc_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_is_vpc_detail.url_path}?input.vpc_crn={{.CRN | @uri}}"
+      href = "${dashboard.ibm_vpc_detail.url_path}?input.vpc_crn={{.CRN | @uri}}"
     }
 
     sql = query.ibm_is_vpc_age_table.sql

@@ -1,9 +1,9 @@
-dashboard "ibm_is_volume_encryption_report" {
+dashboard "ibm_blockstorage_volume_report_encryption" {
 
   title         = "IBM Block Storage Volume Encryption Report"
-  documentation = file("./dashboards/storage/docs/storage_volume_report_encryption.md")
+  documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_report_encryption.md")
 
-  tags = merge(local.storage_common_tags, {
+  tags = merge(local.blockstorage_common_tags, {
     type     = "Report"
     category = "Encryption"
   })
@@ -42,7 +42,7 @@ dashboard "ibm_is_volume_encryption_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_is_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
+      href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
     }
 
     query = query.ibm_is_volume_encryption_report

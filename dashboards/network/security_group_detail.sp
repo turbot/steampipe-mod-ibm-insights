@@ -1,7 +1,7 @@
-dashboard "ibm_is_security_group_detail" {
+dashboard "ibm_security_group_detail" {
 
   title = "IBM Security Group Detail"
-  documentation = file("./dashboards/network/docs/network_security_group_detail.md")
+  documentation = file("./dashboards/network/docs/security_group_detail.md")
 
   tags = merge(local.network_common_tags, {
     type = "Detail"

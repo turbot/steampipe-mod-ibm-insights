@@ -1,7 +1,7 @@
-dashboard "ibm_is_security_group_dashboard" {
+dashboard "ibm_security_group_dashboard" {
 
   title = "IBM Security Group Dashboard"
-  documentation = file("./dashboards/network/docs/network_security_group_dashboard.md")
+  documentation = file("./dashboards/network/docs/security_group_dashboard.md")
 
   tags = merge(local.network_common_tags, {
     type = "Dashboard"
@@ -23,7 +23,6 @@ dashboard "ibm_is_security_group_dashboard" {
       sql = query.ibm_is_security_group_unrestricted_inbound_count.sql
       width = 2
     }
-
 
     card {
       sql = query.ibm_is_security_group_unrestricted_outbound_count.sql
