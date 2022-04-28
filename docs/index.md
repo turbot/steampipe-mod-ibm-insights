@@ -6,7 +6,10 @@ repository: "https://github.com/turbot/steampipe-mod-ibm-insights"
 
 Create dashboards and reports for your IBM Cloud resources using Steampipe.
 
-<!-- PNG IMAGES TO DO-->
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_compute_instance_age_report.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_kms_key_dashboard.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_security_group_detail.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png" width="50%" type="thumbnail"/>
 
 ## Overview
 
@@ -16,10 +19,8 @@ Dashboards can help answer questions like:
 - How old are my resources?
 - Are there any publicly accessible resources?
 - Is encryption enabled and what keys are used for encryption?
-- Is versioning enabled?
-<!-- - What are the relationships between closely connected resources like IAM users, groups, and policies? -->
 
-<!-- TO DO -->
+Dashboards are available for Block Storage, Compute, Disk, KMS Key, and VPC services.
 
 ## References
 

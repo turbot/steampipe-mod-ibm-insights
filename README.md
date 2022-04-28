@@ -2,7 +2,7 @@
 
 An IBM Cloud dashboarding tool that can be used to view dashboards and reports across all of your IBM Cloud accounts.
 
-<!-- ![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_??_bucket_dashboard.png) -->
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png)
 
 ## Overview
 
@@ -12,10 +12,8 @@ Dashboards can help answer questions like:
 - How old are my resources?
 - Are there any publicly accessible resources?
 - Is encryption enabled and what keys are used for encryption?
-- Is versioning enabled?
-<!-- - What are the relationships between closely connected resources like IAM users, groups, and policies? -->
 
-<!-- Dashboards are available for 15+ services, including CloudTrail, EC2, IAM, RDS, S3, VPC, and more! -->
+Dashboards are available for Block Storage, Compute, Disk, KMS Key, and VPC services.
 
 ## Getting started
 
@@ -28,7 +26,7 @@ brew tap turbot/tap
 brew install steampipe
 
 steampipe -v
-steampipe version 0.13.0
+steampipe version 0.13.6
 ```
 
 2) Install the IBM Cloud plugin:
