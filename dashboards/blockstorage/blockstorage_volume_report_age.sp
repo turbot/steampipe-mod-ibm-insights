@@ -1,9 +1,9 @@
-dashboard "ibm_is_volume_age_report" {
+dashboard "ibm_blockstorage_volume_report_age" {
 
   title         = "IBM Block Storage Volume Age Report"
-  documentation = file("./dashboards/storage/docs/storage_volume_report_age.md")
+  documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_report_age.md")
 
-  tags = merge(local.storage_common_tags, {
+  tags = merge(local.blockstorage_common_tags, {
     type     = "Report"
     category = "Age"
   })
@@ -61,7 +61,7 @@ dashboard "ibm_is_volume_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_is_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
+      href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
     }
 
     sql = query.ibm_is_volume_age_table.sql

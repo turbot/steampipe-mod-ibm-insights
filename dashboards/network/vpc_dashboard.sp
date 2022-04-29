@@ -1,4 +1,4 @@
-dashboard "ibm_is_vpc_dashboard" {
+dashboard "ibm_vpc_dashboard" {
 
   title = "IBM VPC Dashboard"
   documentation = file("./dashboards/network/docs/vpc_dashboard.md")

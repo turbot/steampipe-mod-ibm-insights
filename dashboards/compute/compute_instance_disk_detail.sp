@@ -58,9 +58,9 @@ dashboard "ibm_compute_instance_disk_detail" {
           display = "none"
         }
 
-        # column "Instance ID" {
-        #   href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_arn={{.CRN | @uri}}"
-        # }
+        column "Instance Name" {
+          href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
+        }
       }
     }
   }
