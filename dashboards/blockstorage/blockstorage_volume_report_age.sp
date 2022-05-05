@@ -56,10 +56,6 @@ dashboard "ibm_blockstorage_volume_report_age" {
       display = "none"
     }
 
-    column "ID" {
-      display = "none"
-    }
-
     column "Name" {
       href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
     }

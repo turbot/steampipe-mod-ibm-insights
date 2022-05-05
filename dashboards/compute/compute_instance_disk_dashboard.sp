@@ -88,7 +88,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
   container {
 
     chart {
-      title = "Storage by Account"
+      title = "Storage by Account (GB)"
       query = query.ibm_compute_instance_disk_storage_by_account
       type  = "column"
       width = 3
@@ -99,7 +99,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
     }
 
     chart {
-      title = "Storage by Region"
+      title = "Storage by Region (GB)"
       query = query.ibm_compute_instance_disk_storage_by_region
       type  = "column"
       width = 3
@@ -110,7 +110,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
     }
 
     chart {
-      title = "Storage by Interface Type"
+      title = "Storage by Interface Type (GB)"
       query = query.ibm_compute_instance_disk_storage_by_interface_type
       type  = "column"
       width = 3
@@ -121,7 +121,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
     }
 
     chart {
-      title = "Storage by Age"
+      title = "Storage by Age (GB)"
       query = query.ibm_compute_instance_disk_storage_by_creation_month
       type  = "column"
       width = 3
@@ -197,7 +197,7 @@ query "ibm_compute_instance_disk_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
-      count(d.*) as "Disks"
+      count(d.*) as "disks"
     from
       ibm_is_instance_disk as d,
       ibm_account as a
@@ -213,7 +213,7 @@ query "ibm_compute_instance_disk_by_region" {
   sql = <<-EOQ
     select
       region,
-      count(*) as "Disks"
+      count(*) as "disks"
     from
       ibm_is_instance_disk
     group by
@@ -225,7 +225,7 @@ query "ibm_compute_instance_disk_by_interface_type" {
   sql = <<-EOQ
     select
       interface_type as "Interface Type",
-      count(i.*) as "Disks"
+      count(i.*) as "disks"
     from
       ibm_is_instance_disk as i
     group by

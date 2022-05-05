@@ -82,13 +82,13 @@ dashboard "ibm_kms_key_dashboard" {
     }
 
     chart {
-      title = "Key State"
+      title = "Enabled/Disabled Status"
       sql   = query.ibm_kms_key_state.sql
       type  = "donut"
       width = 3
 
       series "count" {
-        point "ok" {
+        point "enabled" {
           color = "ok"
         }
         point "disabled" {
@@ -263,7 +263,7 @@ query "ibm_kms_key_dual_auth_status" {
 query "ibm_kms_key_state" {
   sql = <<-EOQ
     select
-      case when state in ('2', '3') then 'disabled' else 'ok' end as status,
+      case when state in ('2', '3') then 'disabled' else 'enabled' end as status,
       count(*)
     from
       ibm_kms_key

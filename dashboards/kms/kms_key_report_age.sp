@@ -57,10 +57,6 @@ dashboard "ibm_kms_key_age_report" {
       display = "none"
     }
 
-    column "Key ID" {
-      display = "none"
-    }
-
     column "Name" {
       href = "${dashboard.ibm_kms_key_detail.url_path}?input.key_crn={{.CRN | @uri}}"
      }

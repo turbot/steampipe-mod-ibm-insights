@@ -248,7 +248,7 @@ query "ibm_kms_key_overview" {
     from
       ibm_kms_key
     where
-      crn = $1
+      crn = $1;
     EOQ
 
   param "crn" {}

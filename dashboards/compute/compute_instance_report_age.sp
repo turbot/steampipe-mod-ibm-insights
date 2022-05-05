@@ -51,11 +51,7 @@ dashboard "ibm_compute_instance_age_report" {
     column "Account ID" {
       display = "none"
     }
-
-    column "ID" {
-      display = "none"
-    }
-
+    
     column "CRN" {
       display = "none"
     }

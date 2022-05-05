@@ -327,7 +327,9 @@ query "ibm_compute_instance_boot_volume" {
     from
       ibm_is_instance
     where
-      crn = $1;
+      crn = $1
+    order by 
+      boot_volume_attachment -> 'volume' ->> 'name';
   EOQ
 
   param "crn" {}
@@ -346,6 +348,8 @@ query "ibm_compute_instance_data_volume" {
     where
       a ->> 'id' <> boot_volume_attachment ->> 'id'
       and crn = $1
+    order by 
+      a -> 'volume' ->> 'name';
   EOQ
 
   param "crn" {}
@@ -365,7 +369,9 @@ query "ibm_compute_instance_disks" {
       ibm_is_instance,
       jsonb_array_elements(disks) as d
     where
-      crn = $1;
+      crn = $1
+    order by
+       d ->> 'name';
   EOQ
 
   param "crn" {}
@@ -381,7 +387,9 @@ query "ibm_compute_instance_vpc" {
     from
       ibm_is_instance
     where
-      crn = $1;
+      crn = $1
+    order by
+      vpc ->> 'name';
   EOQ
 
   param "crn" {}
@@ -399,7 +407,9 @@ query "ibm_compute_instance_network_interfaces" {
       ibm_is_instance,
       jsonb_array_elements(network_interfaces) as i
     where
-      crn = $1;
+      crn = $1
+    order by
+      i ->> 'name';
   EOQ
 
   param "crn" {}

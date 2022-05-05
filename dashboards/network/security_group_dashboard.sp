@@ -176,7 +176,7 @@ query "ibm_is_security_group_unrestricted_inbound_count" {
       end as type
     from
       ibm_is_security_group as sg
-      where sg.id in (select id from inbound_sg )
+      where sg.id in (select id from inbound_sg);
   EOQ
 }
 
@@ -207,7 +207,7 @@ query "ibm_is_security_group_unrestricted_outbound_count" {
       end as type
     from
       ibm_is_security_group as sg
-      where sg.id in (select id from outbound_sg )
+      where sg.id in (select id from outbound_sg);
   EOQ
 }
 

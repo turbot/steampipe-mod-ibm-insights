@@ -301,6 +301,6 @@ query "ibm_is_vpc_by_rfc1918_range" {
     group by
       rfc1918_bucket
     order by
-      rfc1918_bucket
+      rfc1918_bucket;
   EOQ
 }

@@ -37,10 +37,6 @@ dashboard "ibm_blockstorage_volume_report_encryption" {
       display = "none"
     }
 
-    column "ID" {
-      display = "none"
-    }
-
     column "Name" {
       href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
     }
@@ -54,6 +50,7 @@ query "ibm_is_volume_encryption_report" {
   sql = <<-EOQ
     select
       v.name as "Name",
+      v.id as "ID",
       v.encryption as "Encryption Type",
       v.encryption_key as "Encryption Key",
       a.name as "Account",
@@ -61,8 +58,7 @@ query "ibm_is_volume_encryption_report" {
       v.region as "Region",
       v.zone ->> 'name' as "Zone",
       v.resource_group ->> 'name' as "Resource Group",
-      v.crn as "CRN",
-      v.id as "ID"
+      v.crn as "CRN"
     from
       ibm_is_volume as v,
       ibm_account as a
