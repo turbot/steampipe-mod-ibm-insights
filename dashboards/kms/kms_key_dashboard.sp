@@ -82,7 +82,7 @@ dashboard "ibm_kms_key_dashboard" {
     }
 
     chart {
-      title = "Enabled/Disabled Status"
+      title = "Key State"
       sql   = query.ibm_kms_key_state.sql
       type  = "donut"
       width = 3

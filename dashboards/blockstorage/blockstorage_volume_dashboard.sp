@@ -107,7 +107,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Account (GB)"
       sql   = query.ibm_is_volume_storage_by_account.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -118,7 +118,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Region (GB)"
       sql   = query.ibm_is_volume_storage_by_region.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -129,7 +129,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Zone (GB)"
       sql   = query.ibm_is_volume_storage_by_zone.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -140,7 +140,18 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Age (GB)"
       sql   = query.ibm_is_volume_storage_by_creation_month.sql
       type  = "column"
-      width = 3
+      width = 4
+
+      series "GB" {
+        color = "tan"
+      }
+    }
+
+    chart {
+      title = "Storage by Profile (GB)"
+      sql   = query.ibm_is_volume_storage_by_profile.sql
+      type  = "column"
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -165,7 +176,7 @@ query "ibm_is_volume_count" {
 query "ibm_is_volume_storage_total" {
   sql = <<-EOQ
     select
-      sum(capacity) as "Total Capacity (GB)"
+      sum(capacity) as "Total Storage (GB)"
     from
       ibm_is_volume;
   EOQ
@@ -312,6 +323,20 @@ query "ibm_is_volume_storage_by_zone" {
       zone -> 'name'
     order by
       zone -> 'name';
+  EOQ
+}
+
+query "ibm_is_volume_storage_by_profile" {
+  sql = <<-EOQ
+    select
+      profile -> 'name' as "Profile",
+      sum(capacity) as "GB"
+    from
+      ibm_is_volume
+    group by
+      profile -> 'name'
+    order by
+      profile -> 'name';
   EOQ
 }
 
