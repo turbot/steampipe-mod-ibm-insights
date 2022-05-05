@@ -621,7 +621,7 @@ query "ibm_is_security_group_outbound_rule_sankey" {
 query "ibm_is_security_group_tags" {
   sql = <<-EOQ
     select
-       (trim('"' from tag::text)) as "User Tag"
+      (trim('"' from tag::text)) as "User Tag"
     from
       ibm_is_security_group,
       jsonb_array_elements(tags) as tag

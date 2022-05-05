@@ -51,7 +51,7 @@ dashboard "ibm_compute_instance_age_report" {
     column "Account ID" {
       display = "none"
     }
-    
+
     column "CRN" {
       display = "none"
     }
@@ -128,6 +128,7 @@ query "ibm_compute_instance_age_table" {
   sql = <<-EOQ
     select
       i.name as "Name",
+      i.id as "ID",
       now()::date - i.created_at::date as "Age in Days",
       i.created_at as "Create Time",
       i.status as "Status",
@@ -135,7 +136,6 @@ query "ibm_compute_instance_age_table" {
       i.account_id as "Account ID",
       i.region as "Region",
       i.crn as "CRN",
-      i.id as "ID"
     from
       ibm_is_instance as i,
       ibm_account as a

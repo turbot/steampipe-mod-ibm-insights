@@ -155,10 +155,10 @@ query "ibm_kms_key_state_details" {
       'State' as label,
       case
         when state = '0' then 'Pre-activation'
-        when state = '1' then 'Active'
-        when state = '2' then 'Suspended'
+        when state = '1' then 'Enabled'
+        when state = '2' then 'Disabled'
         when state = '3' then 'Deactivated'
-        when state = '5' then 'Destroyed'
+        when state = '5' then 'Deleted'
         else state end as value,
       case when state in ('1','0') then 'ok' else 'alert' end as "type"
     from

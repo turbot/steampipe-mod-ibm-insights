@@ -253,7 +253,7 @@ query "ibm_is_volume_overview" {
 query "ibm_is_volume_tags" {
   sql = <<-EOQ
     select
-      (trim(' from tag::text)) as "User Tag"
+      (trim('"' from tag::text)) as "User Tag"
     from
       ibm_is_volume,
       jsonb_array_elements(tags) as tag

@@ -371,7 +371,7 @@ query "ibm_compute_instance_disks" {
     where
       crn = $1
     order by
-       d ->> 'name';
+      d ->> 'name';
   EOQ
 
   param "crn" {}
