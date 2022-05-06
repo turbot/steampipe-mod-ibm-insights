@@ -1,9 +1,9 @@
 dashboard "ibm_security_group_detail" {
 
   title = "IBM Security Group Detail"
-  documentation = file("./dashboards/network/docs/security_group_detail.md")
+  documentation = file("./dashboards/vpc/docs/security_group_detail.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type = "Detail"
   })
 

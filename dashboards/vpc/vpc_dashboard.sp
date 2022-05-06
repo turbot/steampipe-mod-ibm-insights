@@ -1,9 +1,9 @@
 dashboard "ibm_vpc_dashboard" {
 
   title = "IBM VPC Dashboard"
-  documentation = file("./dashboards/network/docs/vpc_dashboard.md")
+  documentation = file("./dashboards/vpc/docs/vpc_dashboard.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type = "Dashboard"
   })
 

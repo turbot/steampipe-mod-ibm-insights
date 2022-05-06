@@ -1,9 +1,9 @@
 dashboard "ibm_security_group_age_report" {
 
   title         = "IBM Security Group Age Report"
-  documentation = file("./dashboards/network/docs/security_group_report_age.md")
+  documentation = file("./dashboards/vpc/docs/security_group_report_age.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type     = "Report"
     category = "Age"
   })
