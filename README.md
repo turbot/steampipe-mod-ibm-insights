@@ -19,23 +19,20 @@ Dashboards are available for Block Storage, Compute, Disk, KMS Key, and VPC serv
 
 ### Installation
 
-1) Download and install Steampipe (https://steampipe.io/downloads). Or use Brew:
+Download and install Steampipe (https://steampipe.io/downloads). Or use Brew:
 
-```shell
+```sh
 brew tap turbot/tap
 brew install steampipe
-
-steampipe -v
-steampipe version 0.13.6
 ```
 
-2) Install the IBM Cloud plugin:
+Install the IBM Cloud plugin with [Steampipe](https://steampipe.io):
 
-```shell
+```sh
 steampipe plugin install ibm
 ```
 
-3) Clone this repo:
+Clone:
 
 ```sh
 git clone https://github.com/turbot/steampipe-mod-ibm-insights.git
@@ -46,17 +43,25 @@ cd steampipe-mod-ibm-insights
 
 Start your dashboard server to get started:
 
-```shell
+```sh
 steampipe dashboard
 ```
 
-By default, the dashboard interface will then be launched in a new browser window at https://localhost:9194.
+By default, the dashboard interface will then be launched in a new browser
+window at https://localhost:9194. From here, you can run benchmarks by
+selecting one or searching for a specific one.
 
-From here, you can view all of your dashboards and reports.
+### Credentials
+
+This mod uses the credentials configured in the [Steampipe IBM plugin](https://hub.steampipe.io/plugins/turbot/ibm).
+
+### Configuration
+
+No extra configuration is required.
 
 ## Contributing
 
-If you have an idea for additional dashboards or reports, or just want to help maintain and extend this mod ([or others](https://github.com/topics/steampipe-mod)) we would love you to join the community and start contributing.
+If you have an idea for additional dashboards or just want to help maintain and extend this mod ([or others](https://github.com/topics/steampipe-mod)) we would love you to join the community and start contributing.
 
 - **[Join our Slack community →](https://steampipe.io/community/join)** and hang out with other Mod developers.
 
