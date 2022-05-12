@@ -1,9 +1,9 @@
 dashboard "ibm_security_group_detail" {
 
   title = "IBM Security Group Detail"
-  documentation = file("./dashboards/network/docs/security_group_detail.md")
+  documentation = file("./dashboards/vpc/docs/security_group_detail.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type = "Detail"
   })
 
@@ -192,7 +192,7 @@ query "ibm_is_security_group_inbound_rules_count" {
       jsonb_array_elements(rules) as r
     where
       r ->> 'direction' = 'inbound'
-      and crn = $1
+      and crn = $1;
   EOQ
 
   param "crn" {}
@@ -265,9 +265,9 @@ query "ibm_is_security_group_unrestricted_outbound" {
       ibm_is_security_group,
       jsonb_array_elements(rules) as r
     where
-      (  r -> 'remote' ->> 'cidr_block' = '0.0.0.0/0')
+      (r -> 'remote' ->> 'cidr_block' = '0.0.0.0/0')
       and r ->> 'protocol' <> 'icmp'
-      and ( r ->> 'port_min' = '1' and r ->> 'port_max' = '65535')
+      and (r ->> 'port_min' = '1' and r ->> 'port_max' = '65535')
       and r ->> 'direction' = 'outbound'
       and crn = $1;
   EOQ
@@ -351,7 +351,7 @@ query "ibm_is_security_group_overview" {
     from
       ibm_is_security_group
     where
-      crn = $1
+      crn = $1;
     EOQ
 
   param "crn" {}
@@ -621,7 +621,7 @@ query "ibm_is_security_group_outbound_rule_sankey" {
 query "ibm_is_security_group_tags" {
   sql = <<-EOQ
     select
-       (trim('"' FROM tag::text)) as "User Tag"
+      (trim('"' from tag::text)) as "User Tag"
     from
       ibm_is_security_group,
       jsonb_array_elements(tags) as tag

@@ -47,6 +47,6 @@ query "ibm_account_table" {
     from
       ibm_account as a left join ibm_iam_account_settings s on a.customer_id = s.account_id
     order by
-      name;
+      a.name;
   EOQ
 }

@@ -118,8 +118,8 @@ query "ibm_compute_unused_instance_disk" {
 query "ibm_compute_instance_disk_overview" {
   sql = <<-EOQ
     select
-      id as "ID",
       name as "Name",
+      id as "ID",
       created_at as "Create Time",
       interface_type as "Interface Type",
       title as "Title",

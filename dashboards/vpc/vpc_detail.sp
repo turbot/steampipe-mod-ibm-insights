@@ -1,9 +1,9 @@
 dashboard "ibm_vpc_detail" {
 
   title = "IBM VPC Detail"
-  documentation = file("./dashboards/network/docs/vpc_detail.md")
+  documentation = file("./dashboards/vpc/docs/vpc_detail.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type = "Detail"
   })
 
@@ -204,7 +204,7 @@ query "ibm_subnet_count_for_vpc" {
       ibm_is_subnet as s
       left join  ibm_is_vpc as v on v.id = s.vpc ->> 'id'
     where
-      v.crn = $1
+      v.crn = $1;
   EOQ
 
   param "crn" {}
@@ -225,7 +225,7 @@ query "ibm_is_vpc_num_ips_for_vpc" {
     select
       sum(num_ips) as "IP Addresses"
     from
-      cidrs
+      cidrs;
   EOQ
 
   param "crn" {}
@@ -275,6 +275,8 @@ query "ibm_is_vpc_security_groups" {
       ibm_is_security_group
     where
       vpc ->> 'crn' = $1
+    order by
+      name;
   EOQ
 
   param "crn" {}
@@ -312,7 +314,7 @@ query "ibm_is_vpc_overview" {
     from
       ibm_is_vpc
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}
@@ -327,7 +329,7 @@ query "ibm_is_vpc_address_prefixes" {
       ibm_is_vpc,
       jsonb_array_elements(address_prefixes) as p
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}
@@ -361,7 +363,7 @@ query "ibm_is_vpc_cse_source_ip_addresses" {
       ibm_is_vpc,
       jsonb_array_elements(cse_source_ips) as i
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}
@@ -469,7 +471,7 @@ query "ibm_inbound_nacl_for_vpc_sankey" {
       'attached' as category,
       network_acl_id as from_id,
       subnet_id as to_id
-    from aces
+    from aces;
 
   EOQ
 
@@ -584,7 +586,7 @@ query "ibm_outbound_nacl_for_vpc_sankey" {
       cidr_block as from_id,
       concat(network_acl_id, '_', rule_name) as to_id,
       null as depth
-    from aces
+    from aces;
 
   EOQ
 

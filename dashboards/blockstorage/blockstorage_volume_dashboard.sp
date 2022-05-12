@@ -60,42 +60,42 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Volumes by Account"
       sql   = query.ibm_is_volume_by_account.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
       title = "Volumes by Region"
       sql   = query.ibm_is_volume_by_region.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
       title = "Volumes by Zone"
       sql   = query.ibm_is_volume_by_zone.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
       title = "Volumes by Age"
       sql   = query.ibm_is_volume_by_creation_month.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
-      title = "Volume by Encryption Type"
+      title = "Volumes by Encryption Type"
       sql   = query.ibm_is_volume_by_encryption_type.sql
       type  = "column"
-      width = 3
+      width = 4
     }
 
     chart {
-      title = "Volume by Profile"
+      title = "Volumes by Profile"
       sql   = query.ibm_is_volume_by_profile.sql
       type  = "column"
-      width = 3
+      width = 4
 
     }
 
@@ -107,7 +107,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Account (GB)"
       sql   = query.ibm_is_volume_storage_by_account.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -118,7 +118,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Region (GB)"
       sql   = query.ibm_is_volume_storage_by_region.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -129,7 +129,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Zone (GB)"
       sql   = query.ibm_is_volume_storage_by_zone.sql
       type  = "column"
-      width = 3
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -140,7 +140,18 @@ dashboard "ibm_blockstorage_volume_dashboard" {
       title = "Storage by Age (GB)"
       sql   = query.ibm_is_volume_storage_by_creation_month.sql
       type  = "column"
-      width = 3
+      width = 4
+
+      series "GB" {
+        color = "tan"
+      }
+    }
+
+    chart {
+      title = "Storage by Profile (GB)"
+      sql   = query.ibm_is_volume_storage_by_profile.sql
+      type  = "column"
+      width = 4
 
       series "GB" {
         color = "tan"
@@ -165,7 +176,7 @@ query "ibm_is_volume_count" {
 query "ibm_is_volume_storage_total" {
   sql = <<-EOQ
     select
-      sum(capacity) as "Total Capacity (GB)"
+      sum(capacity) as "Total Storage (GB)"
     from
       ibm_is_volume;
   EOQ
@@ -175,7 +186,7 @@ query "ibm_is_volume_unattached_count" {
   sql = <<-EOQ
     select
       count(*) as value,
-      'Unattached' as label,
+      'Not In-Use' as label,
       case count(*) when 0 then 'ok' else 'alert' end as "type"
     from
       ibm_is_volume
@@ -315,6 +326,20 @@ query "ibm_is_volume_storage_by_zone" {
   EOQ
 }
 
+query "ibm_is_volume_storage_by_profile" {
+  sql = <<-EOQ
+    select
+      profile -> 'name' as "Profile",
+      sum(capacity) as "GB"
+    from
+      ibm_is_volume
+    group by
+      profile -> 'name'
+    order by
+      profile -> 'name';
+  EOQ
+}
+
 query "ibm_is_volume_by_creation_month" {
   sql = <<-EOQ
     with volumes as (
@@ -410,7 +435,7 @@ query "ibm_is_volume_by_encryption_type" {
   sql = <<-EOQ
     select
       encryption as "Encryption Type",
-      count(*) as "Volumes"
+      count(*) as "volumes"
     from
       ibm_is_volume
     group by

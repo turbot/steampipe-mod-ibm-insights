@@ -137,6 +137,6 @@ query "ibm_compute_instance_disk_age_table" {
     where
       d.account_id = a.customer_id
     order by
-      d.id;
+      d.name;
   EOQ
 }

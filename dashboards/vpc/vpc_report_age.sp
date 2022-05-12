@@ -1,9 +1,9 @@
 dashboard "ibm_vpc_age_report" {
 
   title         = "IBM VPC Age Report"
-  documentation = file("./dashboards/network/docs/vpc_report_age.md")
+  documentation = file("./dashboards/vpc/docs/vpc_report_age.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type     = "Report"
     category = "Age"
   })

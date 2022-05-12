@@ -1,9 +1,9 @@
 dashboard "ibm_security_group_age_report" {
 
   title         = "IBM Security Group Age Report"
-  documentation = file("./dashboards/network/docs/security_group_report_age.md")
+  documentation = file("./dashboards/vpc/docs/security_group_report_age.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type     = "Report"
     category = "Age"
   })
@@ -53,10 +53,6 @@ dashboard "ibm_security_group_age_report" {
     }
 
     column "CRN" {
-      display = "none"
-    }
-
-    column "ID" {
       display = "none"
     }
 
@@ -136,20 +132,20 @@ query "ibm_is_security_group_age_table" {
   sql = <<-EOQ
     select
       sg.name as "Name",
+      sg.id as "ID",
       now()::date - sg.created_at::date as "Age in Days",
       sg.created_at as "Create Time",
       a.name as "Account",
       sg.account_id as "Account ID",
       sg.region as "Region",
       sg.resource_group ->> 'name' as "Resource Group",
-      sg.crn as "CRN",
-      sg.id as "ID"
+      sg.crn as "CRN"
     from
       ibm_is_security_group as sg,
       ibm_account as a
     where
       sg.account_id = a.customer_id
     order by
-      sg.name ;
+      sg.name;
   EOQ
 }

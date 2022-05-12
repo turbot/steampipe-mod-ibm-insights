@@ -1,9 +1,9 @@
 dashboard "ibm_security_group_dashboard" {
 
   title = "IBM Security Group Dashboard"
-  documentation = file("./dashboards/network/docs/security_group_dashboard.md")
+  documentation = file("./dashboards/vpc/docs/security_group_dashboard.md")
 
-  tags = merge(local.network_common_tags, {
+  tags = merge(local.vpc_common_tags, {
     type = "Dashboard"
   })
 
@@ -176,7 +176,7 @@ query "ibm_is_security_group_unrestricted_inbound_count" {
       end as type
     from
       ibm_is_security_group as sg
-      where sg.id in (select id from inbound_sg )
+      where sg.id in (select id from inbound_sg);
   EOQ
 }
 
@@ -207,7 +207,7 @@ query "ibm_is_security_group_unrestricted_outbound_count" {
       end as type
     from
       ibm_is_security_group as sg
-      where sg.id in (select id from outbound_sg )
+      where sg.id in (select id from outbound_sg);
   EOQ
 }
 
