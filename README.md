@@ -51,7 +51,7 @@ By default, the dashboard interface will then be launched in a new browser windo
 
 ### Credentials
 
-This mod uses the credentials configured in the [Steampipe IBM plugin](https://hub.steampipe.io/plugins/turbot/ibm).
+This mod uses the credentials configured in the [Steampipe IBM Cloud plugin](https://hub.steampipe.io/plugins/turbot/ibm).
 
 ### Configuration
 
