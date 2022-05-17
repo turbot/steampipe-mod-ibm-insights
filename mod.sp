@@ -15,5 +15,8 @@ mod "ibm_insights" {
 
   require {
     steampipe = "0.13.1"
+    plugin "ibm" {
+      version = "0.1.0"
+    }
   }
 }
