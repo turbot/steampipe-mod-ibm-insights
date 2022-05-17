@@ -2,7 +2,7 @@
 repository: "https://github.com/turbot/steampipe-mod-ibm-insights"
 ---
 
-# IBM Insights Mod
+# IBM Cloud Insights Mod
 
 Create dashboards and reports for your IBM Cloud resources using Steampipe.
 
