@@ -134,7 +134,7 @@ query "ibm_is_vpc_no_subnet_count" {
       ibm_is_vpc as v
       left join ibm_is_subnet as s on v.id = s.vpc ->> 'id'
     where
-      s.id is null
+      s.id is null;
   EOQ
 }
 

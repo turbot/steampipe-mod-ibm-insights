@@ -10,7 +10,6 @@ dashboard "ibm_blockstorage_volume_dashboard" {
   container {
 
     # Analysis
-
     card {
       sql   = query.ibm_is_volume_count.sql
       width = 2
@@ -22,7 +21,6 @@ dashboard "ibm_blockstorage_volume_dashboard" {
     }
 
     # Assessments
-
     card {
       sql   = query.ibm_is_volume_unattached_count.sql
       width = 2

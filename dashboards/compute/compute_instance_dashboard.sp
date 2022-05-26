@@ -134,7 +134,7 @@ query "ibm_compute_public_instance_count" {
     from
       ibm_is_instance
     where
-      jsonb_array_length(floating_ips) <> 0
+      jsonb_array_length(floating_ips) <> 0;
   EOQ
 }
 
@@ -157,7 +157,7 @@ query "ibm_compute_instance_by_floating_ip" {
     from
       instances
     group by
-      visibility
+      visibility;
   EOQ
 }
 
@@ -175,7 +175,7 @@ query "ibm_compute_instance_by_account" {
       a.customer_id = i.account_id
     group by
       account
-    order by count(i.*) desc
+    order by count(i.*) desc;
   EOQ
 }
 
@@ -187,7 +187,7 @@ query "ibm_compute_instance_by_region" {
     from
       ibm_is_instance as i
     group by
-      region
+      region;
   EOQ
 }
 
