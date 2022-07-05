@@ -1,4 +1,4 @@
-# IBM Cloud Insights
+# IBM Cloud Insights Mod for Steampipe
 
 An IBM Cloud dashboarding tool that can be used to view dashboards and reports across all of your IBM Cloud accounts.
 
