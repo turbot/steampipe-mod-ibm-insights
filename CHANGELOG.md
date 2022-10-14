@@ -1,3 +1,9 @@
+## v0.3 [2022-10-14]
+
+_Bug fixes_
+
+- Fixed `ibm_compute_instance_age_table` query in Compute Instance Age Report dashboard. ([#31](https://github.com/turbot/steampipe-mod-ibm-insights/pull/31))
+
 ## v0.2 [2022-05-17]
 
 _Bug fixes_
