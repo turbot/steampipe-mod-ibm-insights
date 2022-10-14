@@ -198,7 +198,7 @@ query "ibm_kms_key_dual_authentication" {
     from
       ibm_kms_key
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}

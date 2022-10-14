@@ -135,7 +135,7 @@ query "ibm_compute_instance_age_table" {
       a.name as "Account",
       i.account_id as "Account ID",
       i.region as "Region",
-      i.crn as "CRN",
+      i.crn as "CRN"
     from
       ibm_is_instance as i,
       ibm_account as a

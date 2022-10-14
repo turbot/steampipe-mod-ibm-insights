@@ -274,7 +274,7 @@ query "ibm_compute_public_instance" {
     from
       ibm_is_instance
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}
@@ -310,7 +310,7 @@ query "ibm_compute_instance_overview" {
     from
       ibm_is_instance
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}

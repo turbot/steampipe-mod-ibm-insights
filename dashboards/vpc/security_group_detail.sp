@@ -95,7 +95,6 @@ dashboard "ibm_security_group_detail" {
           crn = self.input.security_group_crn.value
         }
 
-
       }
 
     }
@@ -163,7 +162,6 @@ flow "security_group_rules_sankey" {
     }
 
   }
-
 
 query "ibm_is_security_group_input" {
   sql = <<-EOQ
@@ -331,7 +329,7 @@ query "ibm_is_security_group_outbound_rules" {
       jsonb_array_elements(rules) as r
     where
       crn = $1
-      and r ->> 'direction' = 'outbound'
+      and r ->> 'direction' = 'outbound';
   EOQ
 
   param "crn" {}

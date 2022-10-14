@@ -244,7 +244,7 @@ query "ibm_is_volume_overview" {
     from
       ibm_is_volume
     where
-      crn = $1
+      crn = $1;
   EOQ
 
   param "crn" {}
