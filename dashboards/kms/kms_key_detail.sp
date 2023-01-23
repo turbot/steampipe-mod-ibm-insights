@@ -1,4 +1,4 @@
-dashboard "ibm_kms_key_detail" {
+dashboard "kms_key_detail" {
 
   title         = "IBM KMS Key Detail"
   documentation = file("./dashboards/kms/docs/kms_key_detail.md")
@@ -10,7 +10,7 @@ dashboard "ibm_kms_key_detail" {
 
   input "key_crn" {
     title = "Select a key:"
-    sql   = query.ibm_kms_key_input.sql
+    sql   = query.kms_key_input.sql
     width = 4
   }
 
@@ -18,44 +18,34 @@ dashboard "ibm_kms_key_detail" {
 
     card {
       width = 2
-      query = query.ibm_kms_key_type
-      args  = {
-        crn = self.input.key_crn.value
-      }
+      query = query.kms_key_type
+      args  = [self.input.key_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_kms_key_ring
-      args  = {
-        crn = self.input.key_crn.value
-      }
+      query = query.kms_key_ring
+      args  = [self.input.key_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_kms_key_state_details
-      args  = {
-        crn = self.input.key_crn.value
-      }
+      query = query.kms_key_state_details
+      args  = [self.input.key_crn.value]
     }
 
 
 
     card {
       width = 2
-      query = query.ibm_kms_root_key_rotation_enabled
-      args  = {
-        crn = self.input.key_crn.value
-      }
+      query = query.kms_root_key_rotation_enabled
+      args  = [self.input.key_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_kms_key_dual_authentication
-      args  = {
-        crn = self.input.key_crn.value
-      }
+      query = query.kms_key_dual_authentication
+      args  = [self.input.key_crn.value]
     }
   }
 
@@ -68,10 +58,8 @@ dashboard "ibm_kms_key_detail" {
       table {
         title = "Overview"
         type  = "line"
-        query = query.ibm_kms_key_overview
-        args  = {
-          crn = self.input.key_crn.value
-        }
+        query = query.kms_key_overview
+        args  = [self.input.key_crn.value]
 
       }
 
@@ -83,18 +71,14 @@ dashboard "ibm_kms_key_detail" {
 
       table {
         title = "Key Age"
-        query = query.ibm_kms_key_age
-        args  = {
-          crn = self.input.key_crn.value
-        }
+        query = query.kms_key_age
+        args  = [self.input.key_crn.value]
       }
 
       table {
         title = "Key Aliases"
-        query = query.ibm_kms_key_aliases
-        args  = {
-          crn = self.input.key_crn.value
-        }
+        query = query.kms_key_aliases
+        args  = [self.input.key_crn.value]
       }
 
     }
@@ -103,7 +87,7 @@ dashboard "ibm_kms_key_detail" {
 
 }
 
-query "ibm_kms_key_input" {
+query "kms_key_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -121,7 +105,7 @@ query "ibm_kms_key_input" {
   EOQ
 }
 
-query "ibm_kms_key_type" {
+query "kms_key_type" {
   sql = <<-EOQ
     select
       'Key Type' as label,
@@ -131,11 +115,9 @@ query "ibm_kms_key_type" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_key_ring" {
+query "kms_key_ring" {
   sql = <<-EOQ
     select
       'Key Ring' as label,
@@ -145,11 +127,9 @@ query "ibm_kms_key_ring" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_key_state_details" {
+query "kms_key_state_details" {
   sql = <<-EOQ
     select
       'State' as label,
@@ -167,11 +147,9 @@ query "ibm_kms_key_state_details" {
       state <> '5'
       and crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_root_key_rotation_enabled" {
+query "kms_root_key_rotation_enabled" {
   sql = <<-EOQ
     select
       'Root Key Rotation' as label,
@@ -184,12 +162,10 @@ query "ibm_kms_root_key_rotation_enabled" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
 
-query "ibm_kms_key_dual_authentication" {
+query "kms_key_dual_authentication" {
   sql = <<-EOQ
     select
       'Dual Authorization' as label,
@@ -200,11 +176,9 @@ query "ibm_kms_key_dual_authentication" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_key_age" {
+query "kms_key_age" {
   sql = <<-EOQ
     select
       creation_date as "Creation Date",
@@ -215,11 +189,9 @@ query "ibm_kms_key_age" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_key_aliases" {
+query "kms_key_aliases" {
   sql = <<-EOQ
     select
       trim((a::text), '""') as "Alias Name"
@@ -229,11 +201,9 @@ query "ibm_kms_key_aliases" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_kms_key_overview" {
+query "kms_key_overview" {
   sql = <<-EOQ
     select
       id as "ID",
@@ -250,6 +220,4 @@ query "ibm_kms_key_overview" {
     where
       crn = $1;
     EOQ
-
-  param "crn" {}
 }

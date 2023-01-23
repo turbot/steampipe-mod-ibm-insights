@@ -1,4 +1,4 @@
-dashboard "ibm_security_group_age_report" {
+dashboard "security_group_age_report" {
 
   title         = "IBM Security Group Age Report"
   documentation = file("./dashboards/vpc/docs/security_group_report_age.md")
@@ -11,36 +11,36 @@ dashboard "ibm_security_group_age_report" {
   container {
 
     card {
-      sql   = query.ibm_is_security_group_count.sql
+      sql   = query.vpc_security_group_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_is_security_group_24_hours_count.sql
-      width = 2
-      type  = "info"
-    }
-
-    card {
-      sql   = query.ibm_is_security_group_30_days_count.sql
+      sql   = query.vpc_security_group_24_hours_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_is_security_group_30_90_days_count.sql
+      sql   = query.vpc_security_group_30_days_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_is_security_group_90_365_days_count.sql
+      sql   = query.vpc_security_group_30_90_days_count.sql
       width = 2
       type  = "info"
     }
 
     card {
-      sql   = query.ibm_is_security_group_1_year_count.sql
+      sql   = query.vpc_security_group_90_365_days_count.sql
+      width = 2
+      type  = "info"
+    }
+
+    card {
+      sql   = query.vpc_security_group_1_year_count.sql
       width = 2
       type  = "info"
     }
@@ -57,15 +57,15 @@ dashboard "ibm_security_group_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
+      href = "${dashboard.security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
     }
 
-    sql = query.ibm_is_security_group_age_table.sql
+    sql = query.vpc_security_group_age_table.sql
   }
 
 }
 
-query "ibm_is_security_group_24_hours_count" {
+query "vpc_security_group_24_hours_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -77,7 +77,7 @@ query "ibm_is_security_group_24_hours_count" {
   EOQ
 }
 
-query "ibm_is_security_group_30_days_count" {
+query "vpc_security_group_30_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -90,7 +90,7 @@ query "ibm_is_security_group_30_days_count" {
   EOQ
 }
 
-query "ibm_is_security_group_30_90_days_count" {
+query "vpc_security_group_30_90_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -103,7 +103,7 @@ query "ibm_is_security_group_30_90_days_count" {
   EOQ
 }
 
-query "ibm_is_security_group_90_365_days_count" {
+query "vpc_security_group_90_365_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -116,7 +116,7 @@ query "ibm_is_security_group_90_365_days_count" {
   EOQ
 }
 
-query "ibm_is_security_group_1_year_count" {
+query "vpc_security_group_1_year_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -128,7 +128,7 @@ query "ibm_is_security_group_1_year_count" {
   EOQ
 }
 
-query "ibm_is_security_group_age_table" {
+query "vpc_security_group_age_table" {
   sql = <<-EOQ
     select
       sg.name as "Name",

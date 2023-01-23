@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_disk_age_report" {
+dashboard "compute_instance_disk_age_report" {
 
   title         = "IBM Compute Instance Disk Age Report"
   documentation = file("./dashboards/compute/docs/compute_instance_disk_report_age.md")
@@ -11,38 +11,38 @@ dashboard "ibm_compute_instance_disk_age_report" {
   container {
 
     card {
-      query = query.ibm_compute_instance_disk_count
+      query = query.compute_instance_disk_count
       width = 2
     }
 
     card {
       type  = "info"
       width = 2
-      query = query.ibm_compute_instance_disk_24_hours_count
+      query = query.compute_instance_disk_24_hours_count
     }
 
     card {
       type  = "info"
       width = 2
-      query = query.ibm_compute_instance_disk_30_days_count
+      query = query.compute_instance_disk_30_days_count
     }
 
     card {
       type  = "info"
       width = 2
-      query = query.ibm_compute_instance_disk_30_90_days_count
+      query = query.compute_instance_disk_30_90_days_count
     }
 
     card {
       width = 2
       type  = "info"
-      query = query.ibm_compute_instance_disk_90_365_days_count
+      query = query.compute_instance_disk_90_365_days_count
     }
 
     card {
       width = 2
       type  = "info"
-      query = query.ibm_compute_instance_disk_1_year_count
+      query = query.compute_instance_disk_1_year_count
     }
 
   }
@@ -53,15 +53,15 @@ dashboard "ibm_compute_instance_disk_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_compute_instance_disk_detail.url_path}?input.disk_id={{.ID | @uri}}"
+      href = "${dashboard.compute_instance_disk_detail.url_path}?input.disk_id={{.ID | @uri}}"
     }
 
-    query = query.ibm_compute_instance_disk_age_table
+    query = query.compute_instance_disk_age_table
   }
 
 }
 
-query "ibm_compute_instance_disk_24_hours_count" {
+query "compute_instance_disk_24_hours_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -73,7 +73,7 @@ query "ibm_compute_instance_disk_24_hours_count" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_30_days_count" {
+query "compute_instance_disk_30_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -85,7 +85,7 @@ query "ibm_compute_instance_disk_30_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_30_90_days_count" {
+query "compute_instance_disk_30_90_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -97,7 +97,7 @@ query "ibm_compute_instance_disk_30_90_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_90_365_days_count" {
+query "compute_instance_disk_90_365_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -109,7 +109,7 @@ query "ibm_compute_instance_disk_90_365_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_1_year_count" {
+query "compute_instance_disk_1_year_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -121,7 +121,7 @@ query "ibm_compute_instance_disk_1_year_count" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_age_table" {
+query "compute_instance_disk_age_table" {
   sql = <<-EOQ
     select
       d.name as "Name",

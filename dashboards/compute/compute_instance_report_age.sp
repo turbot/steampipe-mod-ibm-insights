@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_age_report" {
+dashboard "compute_instance_age_report" {
 
   title         = "IBM Compute Instance Age Report"
   documentation = file("./dashboards/compute/docs/compute_instance_report_age.md")
@@ -11,38 +11,38 @@ dashboard "ibm_compute_instance_age_report" {
    container {
 
     card {
-      sql   = query.ibm_compute_instance_count.sql
+      sql   = query.compute_instance_count.sql
       width = 2
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_compute_instance_24_hours_count.sql
+      sql   = query.compute_instance_24_hours_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_compute_instance_30_days_count.sql
+      sql   = query.compute_instance_30_days_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_compute_instance_30_90_days_count.sql
+      sql   = query.compute_instance_30_90_days_count.sql
     }
 
     card {
       width = 2
       type  = "info"
-      sql   = query.ibm_compute_instance_90_365_days_count.sql
+      sql   = query.compute_instance_90_365_days_count.sql
     }
 
     card {
       width = 2
       type  = "info"
-      sql   = query.ibm_compute_instance_1_year_count.sql
+      sql   = query.compute_instance_1_year_count.sql
     }
 
   }
@@ -57,14 +57,14 @@ dashboard "ibm_compute_instance_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
+      href = "${dashboard.compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
     }
-    sql = query.ibm_compute_instance_age_table.sql
+    sql = query.compute_instance_age_table.sql
   }
 
 }
 
-query "ibm_compute_instance_24_hours_count" {
+query "compute_instance_24_hours_count" {
   sql   = <<-EOQ
     select
       count(*) as value,
@@ -76,7 +76,7 @@ query "ibm_compute_instance_24_hours_count" {
   EOQ
 }
 
-query "ibm_compute_instance_30_days_count" {
+query "compute_instance_30_days_count" {
   sql   = <<-EOQ
     select
       count(*) as value,
@@ -88,7 +88,7 @@ query "ibm_compute_instance_30_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_30_90_days_count" {
+query "compute_instance_30_90_days_count" {
   sql   = <<-EOQ
     select
       count(*) as value,
@@ -100,7 +100,7 @@ query "ibm_compute_instance_30_90_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_90_365_days_count" {
+query "compute_instance_90_365_days_count" {
   sql   = <<-EOQ
     select
       count(*) as value,
@@ -112,7 +112,7 @@ query "ibm_compute_instance_90_365_days_count" {
   EOQ
 }
 
-query "ibm_compute_instance_1_year_count" {
+query "compute_instance_1_year_count" {
   sql   = <<-EOQ
     select
       count(*) as value,
@@ -124,7 +124,7 @@ query "ibm_compute_instance_1_year_count" {
   EOQ
 }
 
-query "ibm_compute_instance_age_table" {
+query "compute_instance_age_table" {
   sql = <<-EOQ
     select
       i.name as "Name",

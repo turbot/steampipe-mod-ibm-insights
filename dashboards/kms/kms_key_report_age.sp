@@ -1,4 +1,4 @@
-dashboard "ibm_kms_key_age_report" {
+dashboard "kms_key_age_report" {
 
   title         = "IBM KMS Key Age Report"
   documentation = file("./dashboards/kms/docs/kms_key_report_age.md")
@@ -12,37 +12,37 @@ dashboard "ibm_kms_key_age_report" {
 
     card {
       width = 2
-      sql   = query.ibm_kms_key_count.sql
+      sql   = query.kms_key_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_kms_key_24_hours_count.sql
+      sql   = query.kms_key_24_hours_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_kms_key_30_days_count.sql
+      sql   = query.kms_key_30_days_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_kms_key_30_90_days_count.sql
+      sql   = query.kms_key_30_90_days_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_kms_key_90_365_days_count.sql
+      sql   = query.kms_key_90_365_days_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_kms_key_1_year_count.sql
+      sql   = query.kms_key_1_year_count.sql
     }
 
   }
@@ -58,16 +58,16 @@ dashboard "ibm_kms_key_age_report" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_kms_key_detail.url_path}?input.key_crn={{.CRN | @uri}}"
+      href = "${dashboard.kms_key_detail.url_path}?input.key_crn={{.CRN | @uri}}"
      }
 
-    sql = query.ibm_kms_key_age_table.sql
+    sql = query.kms_key_age_table.sql
 
   }
 
 }
 
-query "ibm_kms_key_24_hours_count" {
+query "kms_key_24_hours_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -80,7 +80,7 @@ query "ibm_kms_key_24_hours_count" {
   EOQ
 }
 
-query "ibm_kms_key_30_days_count" {
+query "kms_key_30_days_count" {
   sql = <<-EOQ
      select
       count(*) as value,
@@ -93,7 +93,7 @@ query "ibm_kms_key_30_days_count" {
   EOQ
 }
 
-query "ibm_kms_key_30_90_days_count" {
+query "kms_key_30_90_days_count" {
   sql = <<-EOQ
      select
       count(*) as value,
@@ -106,7 +106,7 @@ query "ibm_kms_key_30_90_days_count" {
   EOQ
 }
 
-query "ibm_kms_key_90_365_days_count" {
+query "kms_key_90_365_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -119,7 +119,7 @@ query "ibm_kms_key_90_365_days_count" {
   EOQ
 }
 
-query "ibm_kms_key_1_year_count" {
+query "kms_key_1_year_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -132,7 +132,7 @@ query "ibm_kms_key_1_year_count" {
   EOQ
 }
 
-query "ibm_kms_key_age_table" {
+query "kms_key_age_table" {
   sql = <<-EOQ
     select
       k.name as "Name",

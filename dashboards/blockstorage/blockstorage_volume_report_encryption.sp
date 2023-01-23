@@ -1,4 +1,4 @@
-dashboard "ibm_blockstorage_volume_report_encryption" {
+dashboard "blockstorage_volume_report_encryption" {
 
   title         = "IBM Block Storage Volume Encryption Report"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_report_encryption.md")
@@ -11,17 +11,17 @@ dashboard "ibm_blockstorage_volume_report_encryption" {
   container {
 
     card {
-      query = query.ibm_is_volume_count
+      query = query.blockstorage_volume_count
       width = 2
     }
 
     card {
-      query = query.ibm_is_volume_provider_managed_encryption_count
+      query = query.blockstorage_volume_provider_managed_encryption_count
       width = 2
     }
 
     card {
-      query = query.ibm_is_volume_user_managed_encryption_count
+      query = query.blockstorage_volume_user_managed_encryption_count
       width = 2
     }
 
@@ -38,15 +38,15 @@ dashboard "ibm_blockstorage_volume_report_encryption" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
+      href = "${dashboard.blockstorage_volume_detail.url_path}?input.volume_crn={{.CRN | @uri}}"
     }
 
-    query = query.ibm_is_volume_encryption_report
+    query = query.blockstorage_volume_encryption_report
   }
 
 }
 
-query "ibm_is_volume_encryption_report" {
+query "blockstorage_volume_encryption_report" {
   sql = <<-EOQ
     select
       v.name as "Name",
@@ -69,7 +69,7 @@ query "ibm_is_volume_encryption_report" {
   EOQ
 }
 
-query "ibm_is_volume_provider_managed_encryption_count" {
+query "blockstorage_volume_provider_managed_encryption_count" {
   sql = <<-EOQ
     select
       count(*) as "Provider-Managed Encryption"
@@ -80,7 +80,7 @@ query "ibm_is_volume_provider_managed_encryption_count" {
   EOQ
 }
 
-query "ibm_is_volume_user_managed_encryption_count" {
+query "blockstorage_volume_user_managed_encryption_count" {
   sql = <<-EOQ
    select
       count(*) as "User-Managed Encryption"

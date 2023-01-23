@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_dashboard" {
+dashboard "compute_instance_dashboard" {
 
   title         = "IBM Compute Instance Dashboard"
   documentation = file("./dashboards/compute/docs/compute_instance_dashboard.md")
@@ -11,18 +11,18 @@ dashboard "ibm_compute_instance_dashboard" {
 
     # Analysis
     card {
-      sql   = query.ibm_compute_instance_count.sql
+      sql   = query.compute_instance_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_compute_instance_total_vcpu.sql
+      sql   = query.compute_instance_total_vcpu.sql
       width = 2
     }
 
     # Assessments
     card {
-      sql   = query.ibm_compute_public_instance_count.sql
+      sql   = query.compute_public_instance_count.sql
       width = 2
     }
 
@@ -35,7 +35,7 @@ dashboard "ibm_compute_instance_dashboard" {
 
     chart {
       title = "Public/Private"
-      sql   = query.ibm_compute_instance_by_floating_ip.sql
+      sql   = query.compute_instance_by_floating_ip.sql
       type  = "donut"
       width = 3
 
@@ -57,49 +57,49 @@ dashboard "ibm_compute_instance_dashboard" {
 
     chart {
       title = "Instances by Account"
-      sql   = query.ibm_compute_instance_by_account.sql
+      sql   = query.compute_instance_by_account.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Region"
-      sql   = query.ibm_compute_instance_by_region.sql
+      sql   = query.compute_instance_by_region.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Zone"
-      sql   = query.ibm_compute_instance_by_zone.sql
+      sql   = query.compute_instance_by_zone.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Resource Group"
-      sql   = query.ibm_compute_instance_by_resource_group.sql
+      sql   = query.compute_instance_by_resource_group.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Age"
-      sql   = query.ibm_compute_instance_by_creation_month.sql
+      sql   = query.compute_instance_by_creation_month.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Status"
-      sql   = query.ibm_compute_instance_by_status.sql
+      sql   = query.compute_instance_by_status.sql
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Instances by Architecture"
-      sql   = query.ibm_compute_instance_by_architecture.sql
+      sql   = query.compute_instance_by_architecture.sql
       type  = "column"
       width = 3
     }
@@ -110,13 +110,13 @@ dashboard "ibm_compute_instance_dashboard" {
 
 # Card Queries
 
-query "ibm_compute_instance_count" {
+query "compute_instance_count" {
   sql = <<-EOQ
     select count(*) as "Instances" from ibm_is_instance;
   EOQ
 }
 
-query "ibm_compute_instance_total_vcpu" {
+query "compute_instance_total_vcpu" {
   sql = <<-EOQ
     select
       sum((vcpu ->> 'count')::int) as "Total vCPUs"
@@ -125,7 +125,7 @@ query "ibm_compute_instance_total_vcpu" {
   EOQ
 }
 
-query "ibm_compute_public_instance_count" {
+query "compute_public_instance_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -140,7 +140,7 @@ query "ibm_compute_public_instance_count" {
 
 # Assessment Queries
 
-query "ibm_compute_instance_by_floating_ip" {
+query "compute_instance_by_floating_ip" {
   sql = <<-EOQ
     with instances as (
       select
@@ -163,7 +163,7 @@ query "ibm_compute_instance_by_floating_ip" {
 
 # Analysis Queries
 
-query "ibm_compute_instance_by_account" {
+query "compute_instance_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -179,7 +179,7 @@ query "ibm_compute_instance_by_account" {
   EOQ
 }
 
-query "ibm_compute_instance_by_region" {
+query "compute_instance_by_region" {
   sql = <<-EOQ
     select
       region,
@@ -191,7 +191,7 @@ query "ibm_compute_instance_by_region" {
   EOQ
 }
 
-query "ibm_compute_instance_by_resource_group" {
+query "compute_instance_by_resource_group" {
   sql = <<-EOQ
     select
       resource_group ->> 'name' as "Resource Group",
@@ -203,7 +203,7 @@ query "ibm_compute_instance_by_resource_group" {
   EOQ
 }
 
-query "ibm_compute_instance_by_status" {
+query "compute_instance_by_status" {
   sql = <<-EOQ
     select
       status,
@@ -215,7 +215,7 @@ query "ibm_compute_instance_by_status" {
   EOQ
 }
 
-query "ibm_compute_instance_by_creation_month" {
+query "compute_instance_by_creation_month" {
   sql = <<-EOQ
     with instances as (
       select
@@ -260,7 +260,7 @@ query "ibm_compute_instance_by_creation_month" {
   EOQ
 }
 
-query "ibm_compute_instance_by_zone" {
+query "compute_instance_by_zone" {
   sql = <<-EOQ
     select
       zone ->> 'name' as "Zone",
@@ -272,7 +272,7 @@ query "ibm_compute_instance_by_zone" {
   EOQ
 }
 
-query "ibm_compute_instance_by_architecture" {
+query "compute_instance_by_architecture" {
   sql = <<-EOQ
     select
       vcpu ->> 'architecture' as "Architecture",

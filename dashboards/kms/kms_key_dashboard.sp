@@ -1,4 +1,4 @@
-dashboard "ibm_kms_key_dashboard" {
+dashboard "kms_key_dashboard" {
 
   title         = "IBM KMS Key Dashboard"
   documentation = file("./dashboards/kms/docs/kms_key_dashboard.md")
@@ -11,34 +11,34 @@ dashboard "ibm_kms_key_dashboard" {
 
     # Analysis
     card {
-      sql   = query.ibm_kms_key_count.sql
+      sql   = query.kms_key_count.sql
       width = 2
     }
 
     #https://www.ibm.com/docs/en/cloud-private/3.2.0?topic=apis-key-management-service
     card {
-      sql   = query.ibm_kms_standard_key_count.sql
+      sql   = query.kms_standard_key_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_kms_root_key_count.sql
+      sql   = query.kms_root_key_count.sql
       width = 2
     }
 
     # Assessments
     card {
-      sql   = query.ibm_kms_root_key_rotation_disabled_count.sql
+      sql   = query.kms_root_key_rotation_disabled_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_kms_key_dual_auth_disabled_count.sql
+      sql   = query.kms_key_dual_auth_disabled_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_kms_key_disabled_count.sql
+      sql   = query.kms_key_disabled_count.sql
       width = 2
     }
 
@@ -51,7 +51,7 @@ dashboard "ibm_kms_key_dashboard" {
 
     chart {
       title = "Root Key Rotation Status"
-      sql   = query.ibm_kms_root_key_rotation_status.sql
+      sql   = query.kms_root_key_rotation_status.sql
       type  = "donut"
       width = 3
 
@@ -67,7 +67,7 @@ dashboard "ibm_kms_key_dashboard" {
 
     chart {
       title = "Dual Authorization Status"
-      sql   = query.ibm_kms_key_dual_auth_status.sql
+      sql   = query.kms_key_dual_auth_status.sql
       type  = "donut"
       width = 3
 
@@ -83,7 +83,7 @@ dashboard "ibm_kms_key_dashboard" {
 
     chart {
       title = "Key State"
-      sql   = query.ibm_kms_key_state.sql
+      sql   = query.kms_key_state.sql
       type  = "donut"
       width = 3
 
@@ -106,35 +106,35 @@ dashboard "ibm_kms_key_dashboard" {
 
     chart {
       title = "Keys by Account"
-      sql   = query.ibm_kms_key_by_account.sql
+      sql   = query.kms_key_by_account.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Keys by Region"
-      sql   = query.ibm_kms_key_by_region.sql
+      sql   = query.kms_key_by_region.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Keys by Age"
-      sql   = query.ibm_kms_key_by_creation_month.sql
+      sql   = query.kms_key_by_creation_month.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Keys by State"
-      sql   = query.ibm_kms_key_by_state.sql
+      sql   = query.kms_key_by_state.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Keys by Algorithm"
-      sql   = query.ibm_kms_key_by_algorithm.sql
+      sql   = query.kms_key_by_algorithm.sql
       type  = "column"
       width = 4
     }
@@ -145,13 +145,13 @@ dashboard "ibm_kms_key_dashboard" {
 
 # Card Queries
 
-query "ibm_kms_key_count" {
+query "kms_key_count" {
   sql = <<-EOQ
     select count(*) as "Keys" from ibm_kms_key where state <> '5';
   EOQ
 }
 
-query "ibm_kms_standard_key_count" {
+query "kms_standard_key_count" {
   sql = <<-EOQ
      select
       count(*) as value,
@@ -164,7 +164,7 @@ query "ibm_kms_standard_key_count" {
   EOQ
 }
 
-query "ibm_kms_root_key_count" {
+query "kms_root_key_count" {
   sql = <<-EOQ
      select
       count(*) as value,
@@ -177,7 +177,7 @@ query "ibm_kms_root_key_count" {
   EOQ
 }
 
-query "ibm_kms_key_disabled_count" {
+query "kms_key_disabled_count" {
   sql = <<-EOQ
     select
     count(*) as value,
@@ -190,7 +190,7 @@ query "ibm_kms_key_disabled_count" {
   EOQ
 }
 
-query "ibm_kms_root_key_rotation_disabled_count" {
+query "kms_root_key_rotation_disabled_count" {
   sql = <<-EOQ
      select
       count(*) as value,
@@ -205,7 +205,7 @@ query "ibm_kms_root_key_rotation_disabled_count" {
   EOQ
 }
 
-query "ibm_kms_key_dual_auth_disabled_count" {
+query "kms_key_dual_auth_disabled_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -221,7 +221,7 @@ query "ibm_kms_key_dual_auth_disabled_count" {
 
 # Assessment Queries
 
-query "ibm_kms_root_key_rotation_status" {
+query "kms_root_key_rotation_status" {
   sql = <<-EOQ
     select
       rotation_status,
@@ -246,7 +246,7 @@ query "ibm_kms_root_key_rotation_status" {
   EOQ
 }
 
-query "ibm_kms_key_dual_auth_status" {
+query "kms_key_dual_auth_status" {
   sql = <<-EOQ
     select
       case when dual_auth_delete ->> 'enabled' = 'true'  then 'enabled' else 'disabled' end as status,
@@ -260,7 +260,7 @@ query "ibm_kms_key_dual_auth_status" {
   EOQ
 }
 
-query "ibm_kms_key_state" {
+query "kms_key_state" {
   sql = <<-EOQ
     select
       case when state in ('2', '3') then 'disabled' else 'enabled' end as status,
@@ -276,7 +276,7 @@ query "ibm_kms_key_state" {
 
 # Analysis Queries
 
-query "ibm_kms_key_by_account" {
+query "kms_key_by_account" {
   sql = <<-EOQ
     select
       a.name as "Account",
@@ -294,7 +294,7 @@ query "ibm_kms_key_by_account" {
   EOQ
 }
 
-query "ibm_kms_key_by_region" {
+query "kms_key_by_region" {
   sql = <<-EOQ
     select
       region,
@@ -308,7 +308,7 @@ query "ibm_kms_key_by_region" {
   EOQ
 }
 
-query "ibm_kms_key_by_state" {
+query "kms_key_by_state" {
   sql = <<-EOQ
     select
       case
@@ -327,7 +327,7 @@ query "ibm_kms_key_by_state" {
   EOQ
 }
 
-query "ibm_kms_key_by_creation_month" {
+query "kms_key_by_creation_month" {
   sql = <<-EOQ
     with keys as (
       select
@@ -374,7 +374,7 @@ query "ibm_kms_key_by_creation_month" {
   EOQ
 }
 
-query "ibm_kms_key_by_algorithm" {
+query "kms_key_by_algorithm" {
   sql = <<-EOQ
     select
       algorithm_type,

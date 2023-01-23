@@ -1,4 +1,4 @@
-dashboard "ibm_vpc_dashboard" {
+dashboard "vpc_dashboard" {
 
   title = "IBM VPC Dashboard"
   documentation = file("./dashboards/vpc/docs/vpc_dashboard.md")
@@ -11,18 +11,18 @@ dashboard "ibm_vpc_dashboard" {
 
     # Analysis
     card {
-      sql   = query.ibm_is_vpc_count.sql
+      sql   = query.vpc_count.sql
       width = 2
     }
 
     card {
-      sql = query.ibm_classic_infrastructure_vpc_count.sql
+      sql = query.vpc_classic_infrastructure_count.sql
       width = 2
     }
 
     # Assessments
     card {
-      sql = query.ibm_is_vpc_no_subnet_count.sql
+      sql = query.vpc_no_subnet_count.sql
       width = 2
     }
 
@@ -36,7 +36,7 @@ dashboard "ibm_vpc_dashboard" {
       title = "Empty VPCs (No Subnets)"
       type  = "donut"
       width = 3
-      sql   = query.ibm_is_vpc_empty_status.sql
+      sql   = query.vpc_empty_status.sql
 
       series "count" {
         point "non-empty" {
@@ -55,14 +55,14 @@ dashboard "ibm_vpc_dashboard" {
 
     chart {
       title = "VPCs by Account"
-      sql   = query.ibm_is_vpc_by_account.sql
+      sql   = query.vpc_by_account.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "VPCs by Resource Group"
-      sql   = query.ibm_is_vpc_by_resource_group.sql
+      sql   = query.vpc_by_resource_group.sql
       type  = "column"
       legend {
         position = "bottom"
@@ -72,7 +72,7 @@ dashboard "ibm_vpc_dashboard" {
 
     chart {
       title = "VPCs by Region"
-      sql   = query.ibm_is_vpc_by_region.sql
+      sql   = query.vpc_by_region.sql
       type  = "column"
       legend {
         position = "bottom"
@@ -82,21 +82,21 @@ dashboard "ibm_vpc_dashboard" {
 
     chart {
       title = "VPCs by Age"
-      sql   = query.ibm_is_vpc_by_creation_month.sql
+      sql   = query.vpc_by_creation_month.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "VPCs by Size"
-      sql   = query.ibm_is_vpc_by_size.sql
+      sql   = query.vpc_by_size.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "VPCs by RFC1918 Range"
-      sql   = query.ibm_is_vpc_by_rfc1918_range.sql
+      sql   = query.vpc_by_rfc1918_range.sql
       type  = "column"
       width = 4
     }
@@ -106,13 +106,13 @@ dashboard "ibm_vpc_dashboard" {
 
 # Card Queries
 
-query "ibm_is_vpc_count" {
+query "vpc_count" {
   sql = <<-EOQ
     select count(*) as "VPCs" from ibm_is_vpc;
   EOQ
 }
 
-query "ibm_classic_infrastructure_vpc_count" {
+query "vpc_classic_infrastructure_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -124,7 +124,7 @@ query "ibm_classic_infrastructure_vpc_count" {
   EOQ
 }
 
-query "ibm_is_vpc_no_subnet_count" {
+query "vpc_no_subnet_count" {
   sql = <<-EOQ
     select
        count(*) as value,
@@ -140,7 +140,7 @@ query "ibm_is_vpc_no_subnet_count" {
 
 # Assessment Queries
 
-query "ibm_is_vpc_empty_status" {
+query "vpc_empty_status" {
   sql = <<-EOQ
     with by_empty as (
       select
@@ -162,7 +162,7 @@ query "ibm_is_vpc_empty_status" {
 
 # Analysis Queries
 
-query "ibm_is_vpc_by_account" {
+query "vpc_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -179,7 +179,7 @@ query "ibm_is_vpc_by_account" {
   EOQ
 }
 
-query "ibm_is_vpc_by_region" {
+query "vpc_by_region" {
   sql = <<-EOQ
     select
       region as "Region",
@@ -193,7 +193,7 @@ query "ibm_is_vpc_by_region" {
   EOQ
 }
 
-query "ibm_is_vpc_by_resource_group" {
+query "vpc_by_resource_group" {
   sql = <<-EOQ
     select
       resource_group ->> 'name' as "Resource Group",
@@ -207,7 +207,7 @@ query "ibm_is_vpc_by_resource_group" {
   EOQ
 }
 
-query "ibm_is_vpc_by_creation_month" {
+query "vpc_by_creation_month" {
   sql = <<-EOQ
     with vpcs as (
       select
@@ -252,7 +252,7 @@ query "ibm_is_vpc_by_creation_month" {
   EOQ
 }
 
-query "ibm_is_vpc_by_size" {
+query "vpc_by_size" {
   sql = <<-EOQ
     with vpc_size as (
       select
@@ -276,7 +276,7 @@ query "ibm_is_vpc_by_size" {
   EOQ
 }
 
-query "ibm_is_vpc_by_rfc1918_range" {
+query "vpc_by_rfc1918_range" {
   sql = <<-EOQ
     with cidr_buckets as (
       select

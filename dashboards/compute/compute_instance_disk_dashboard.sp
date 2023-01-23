@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_disk_dashboard" {
+dashboard "compute_instance_disk_dashboard" {
 
   title         = "IBM Compute Instance Disk Dashboard"
   documentation = file("./dashboards/compute/docs/compute_instance_disk_dashboard.md")
@@ -12,19 +12,19 @@ dashboard "ibm_compute_instance_disk_dashboard" {
     # Analysis
 
     card {
-      query = query.ibm_compute_instance_disk_count
+      query = query.compute_instance_disk_count
       width = 2
     }
 
     card {
-      query = query.ibm_compute_instance_disk_total_storage
+      query = query.compute_instance_disk_total_storage
       width = 2
     }
 
     # Assessments
 
     card {
-      query = query.ibm_compute_unused_instance_disk_count
+      query = query.compute_unused_instance_disk_count
       width = 2
     }
   }
@@ -36,7 +36,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Disk State"
-      query = query.ibm_compute_instance_disk_by_instance_state
+      query = query.compute_instance_disk_by_instance_state
       type  = "donut"
       width = 3
 
@@ -58,28 +58,28 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Disks by Account"
-      query = query.ibm_compute_instance_disk_by_account
+      query = query.compute_instance_disk_by_account
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Disks by Region"
-      query = query.ibm_compute_instance_disk_by_region
+      query = query.compute_instance_disk_by_region
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Disks by Interface Type"
-      query = query.ibm_compute_instance_disk_by_interface_type
+      query = query.compute_instance_disk_by_interface_type
       type  = "column"
       width = 3
     }
 
     chart {
       title = "Disks by Age"
-      query = query.ibm_compute_instance_disk_by_creation_month
+      query = query.compute_instance_disk_by_creation_month
       type  = "column"
       width = 3
     }
@@ -89,7 +89,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Storage by Account (GB)"
-      query = query.ibm_compute_instance_disk_storage_by_account
+      query = query.compute_instance_disk_storage_by_account
       type  = "column"
       width = 3
 
@@ -100,7 +100,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Storage by Region (GB)"
-      query = query.ibm_compute_instance_disk_storage_by_region
+      query = query.compute_instance_disk_storage_by_region
       type  = "column"
       width = 3
 
@@ -111,7 +111,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Storage by Interface Type (GB)"
-      query = query.ibm_compute_instance_disk_storage_by_interface_type
+      query = query.compute_instance_disk_storage_by_interface_type
       type  = "column"
       width = 3
 
@@ -122,7 +122,7 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
     chart {
       title = "Storage by Age (GB)"
-      query = query.ibm_compute_instance_disk_storage_by_creation_month
+      query = query.compute_instance_disk_storage_by_creation_month
       type  = "column"
       width = 3
 
@@ -135,13 +135,13 @@ dashboard "ibm_compute_instance_disk_dashboard" {
 
 # Card Queries
 
-query "ibm_compute_instance_disk_count" {
+query "compute_instance_disk_count" {
   sql = <<-EOQ
     select count(*) as "Disks" from ibm_is_instance_disk;
   EOQ
 }
 
-query "ibm_compute_instance_disk_total_storage" {
+query "compute_instance_disk_total_storage" {
   sql = <<-EOQ
     select
       sum(size) as "Total Storage (GB)"
@@ -150,7 +150,7 @@ query "ibm_compute_instance_disk_total_storage" {
   EOQ
 }
 
-query "ibm_compute_unused_instance_disk_count" {
+query "compute_unused_instance_disk_count" {
   sql = <<-EOQ
     select
       count(d.*) as value,
@@ -167,13 +167,13 @@ query "ibm_compute_unused_instance_disk_count" {
 
 # Assessment Queries
 
-query "ibm_compute_instance_disk_by_instance_state" {
+query "compute_instance_disk_by_instance_state" {
   sql = <<-EOQ
     with disks as (
       select
         case
           when i.status <> 'running' then 'unused'
-          else 'in-use' 
+          else 'in-use'
 		  end as state
 		from
 			ibm_is_instance_disk as d,
@@ -193,7 +193,7 @@ query "ibm_compute_instance_disk_by_instance_state" {
 
 # Analysis Queries
 
-query "ibm_compute_instance_disk_by_account" {
+query "compute_instance_disk_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -209,7 +209,7 @@ query "ibm_compute_instance_disk_by_account" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_by_region" {
+query "compute_instance_disk_by_region" {
   sql = <<-EOQ
     select
       region,
@@ -221,7 +221,7 @@ query "ibm_compute_instance_disk_by_region" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_by_interface_type" {
+query "compute_instance_disk_by_interface_type" {
   sql = <<-EOQ
     select
       interface_type as "Interface Type",
@@ -233,7 +233,7 @@ query "ibm_compute_instance_disk_by_interface_type" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_by_creation_month" {
+query "compute_instance_disk_by_creation_month" {
   sql = <<-EOQ
     with disks as (
       select
@@ -278,7 +278,7 @@ query "ibm_compute_instance_disk_by_creation_month" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_storage_by_account" {
+query "compute_instance_disk_storage_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -294,7 +294,7 @@ query "ibm_compute_instance_disk_storage_by_account" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_storage_by_region" {
+query "compute_instance_disk_storage_by_region" {
   sql = <<-EOQ
     select
       region,
@@ -306,7 +306,7 @@ query "ibm_compute_instance_disk_storage_by_region" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_storage_by_interface_type" {
+query "compute_instance_disk_storage_by_interface_type" {
   sql = <<-EOQ
     select
       interface_type as "Interface Type",
@@ -318,7 +318,7 @@ query "ibm_compute_instance_disk_storage_by_interface_type" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_storage_by_creation_month" {
+query "compute_instance_disk_storage_by_creation_month" {
   sql = <<-EOQ
     with disks as (
       select

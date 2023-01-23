@@ -1,4 +1,4 @@
-dashboard "ibm_security_group_detail" {
+dashboard "security_group_detail" {
 
   title = "IBM Security Group Detail"
   documentation = file("./dashboards/vpc/docs/security_group_detail.md")
@@ -9,7 +9,7 @@ dashboard "ibm_security_group_detail" {
 
   input "security_group_crn" {
     title = "Select a security group:"
-    sql   = query.ibm_is_security_group_input.sql
+    sql   = query.vpc_security_group_input.sql
     width = 4
   }
 
@@ -17,42 +17,32 @@ dashboard "ibm_security_group_detail" {
 
     card {
       width = 2
-      query = query.ibm_is_security_group_inbound_rules_count
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_inbound_rules_count
+      args  = [self.input.security_group_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_security_group_outbound_rules_count
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_outbound_rules_count
+      args  = [self.input.security_group_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_security_group_attached_enis_count
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_attached_enis_count
+      args  = [self.input.security_group_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_security_group_unrestricted_inbound
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_unrestricted_inbound
+      args  = [self.input.security_group_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_security_group_unrestricted_outbound
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_unrestricted_outbound
+      args  = [self.input.security_group_crn.value]
     }
 
   }
@@ -66,20 +56,16 @@ dashboard "ibm_security_group_detail" {
         title = "Overview"
         type  = "line"
         width = 6
-        query = query.ibm_is_security_group_overview
-        args  = {
-          crn = self.input.security_group_crn.value
-        }
+        query = query.vpc_security_group_overview
+        args  = [self.input.security_group_crn.value]
 
       }
 
       table {
         title = "Tags"
         width = 6
-        query = query.ibm_is_security_group_tags
-        args  = {
-          crn = self.input.security_group_crn.value
-        }
+        query = query.vpc_security_group_tags
+        args  = [self.input.security_group_crn.value]
       }
 
     }
@@ -90,10 +76,8 @@ dashboard "ibm_security_group_detail" {
 
       table {
         title = "Associated to"
-        query = query.ibm_is_security_group_association
-        args  = {
-          crn = self.input.security_group_crn.value
-        }
+        query = query.vpc_security_group_association
+        args  = [self.input.security_group_crn.value]
 
       }
 
@@ -108,18 +92,14 @@ dashboard "ibm_security_group_detail" {
     flow {
       base = flow.security_group_rules_sankey
       title = "Inbound Analysis"
-      query = query.ibm_is_security_group_inbound_rule_sankey
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_inbound_rule_sankey
+      args  = [self.input.security_group_crn.value]
     }
 
     table {
       title = "Inbound Rules"
-      query = query.ibm_is_security_group_inbound_rules
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_inbound_rules
+      args  = [self.input.security_group_crn.value]
     }
 
   }
@@ -131,18 +111,14 @@ dashboard "ibm_security_group_detail" {
     flow {
       base = flow.security_group_rules_sankey
       title = "Outbound Analysis"
-      query = query.ibm_is_security_group_outbound_rule_sankey
-      args  = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_outbound_rule_sankey
+      args  = [self.input.security_group_crn.value]
     }
 
     table {
       title = "Outbound Rules"
-      query = query.ibm_is_security_group_outbound_rules
-      args = {
-        crn = self.input.security_group_crn.value
-      }
+      query = query.vpc_security_group_outbound_rules
+      args = [self.input.security_group_crn.value]
     }
 
   }
@@ -163,7 +139,7 @@ flow "security_group_rules_sankey" {
 
   }
 
-query "ibm_is_security_group_input" {
+query "vpc_security_group_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -180,7 +156,7 @@ query "ibm_is_security_group_input" {
   EOQ
 }
 
-query "ibm_is_security_group_inbound_rules_count" {
+query "vpc_security_group_inbound_rules_count" {
   sql = <<-EOQ
     select
       'Inbound Rules' as label,
@@ -192,11 +168,9 @@ query "ibm_is_security_group_inbound_rules_count" {
       r ->> 'direction' = 'inbound'
       and crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_outbound_rules_count" {
+query "vpc_security_group_outbound_rules_count" {
   sql = <<-EOQ
     select
       'Outbound Rules' as label,
@@ -208,11 +182,9 @@ query "ibm_is_security_group_outbound_rules_count" {
       r ->> 'direction' = 'outbound'
       and crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_attached_enis_count" {
+query "vpc_security_group_attached_enis_count" {
   sql = <<-EOQ
     select
       'Attached ENIs' as label,
@@ -223,11 +195,9 @@ query "ibm_is_security_group_attached_enis_count" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_unrestricted_inbound" {
+query "vpc_security_group_unrestricted_inbound" {
   sql = <<-EOQ
     select
       'Unrestricted Inbound (Excludes ICMP)' as label,
@@ -246,11 +216,9 @@ query "ibm_is_security_group_unrestricted_inbound" {
       and r ->> 'direction' = 'inbound'
       and crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_unrestricted_outbound" {
+query "vpc_security_group_unrestricted_outbound" {
   sql = <<-EOQ
     select
       'Unrestricted Outbound (Excludes ICMP)' as label,
@@ -269,11 +237,9 @@ query "ibm_is_security_group_unrestricted_outbound" {
       and r ->> 'direction' = 'outbound'
       and crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_inbound_rules" {
+query "vpc_security_group_inbound_rules" {
   sql = <<-EOQ
     select
       concat(text(r -> 'remote' ->> 'cidr_block'), (r -> 'remote' ->> 'id'),(r -> 'remote' ->> 'address')) as "Source",
@@ -300,11 +266,9 @@ query "ibm_is_security_group_inbound_rules" {
       crn = $1
       and r ->> 'direction' = 'inbound';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_outbound_rules" {
+query "vpc_security_group_outbound_rules" {
   sql = <<-EOQ
     select
       concat(text(r -> 'remote' ->> 'cidr_block'), (r -> 'remote' ->> 'id'),(r -> 'remote' ->> 'address')) as "Source",
@@ -331,11 +295,9 @@ query "ibm_is_security_group_outbound_rules" {
       crn = $1
       and r ->> 'direction' = 'outbound';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_overview" {
+query "vpc_security_group_overview" {
   sql   = <<-EOQ
     select
       name as "Name",
@@ -351,11 +313,9 @@ query "ibm_is_security_group_overview" {
     where
       crn = $1;
     EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_association" {
+query "vpc_security_group_association" {
   sql = <<-EOQ
     select
       t ->> 'name' as "Name",
@@ -368,11 +328,9 @@ query "ibm_is_security_group_association" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_inbound_rule_sankey" {
+query "vpc_security_group_inbound_rule_sankey" {
   sql = <<-EOQ
 
     with associations as (
@@ -491,11 +449,9 @@ query "ibm_is_security_group_inbound_rule_sankey" {
       from
         rules
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_security_group_outbound_rule_sankey" {
+query "vpc_security_group_outbound_rule_sankey" {
   sql = <<-EOQ
 
     with associations as (
@@ -613,10 +569,9 @@ query "ibm_is_security_group_outbound_rule_sankey" {
       from
         rules
   EOQ
-    param "crn" {}
 }
 
-query "ibm_is_security_group_tags" {
+query "vpc_security_group_tags" {
   sql = <<-EOQ
     select
       (trim('"' from tag::text)) as "User Tag"
@@ -628,6 +583,4 @@ query "ibm_is_security_group_tags" {
     order by
       tag;
     EOQ
-
-  param "crn" {}
 }

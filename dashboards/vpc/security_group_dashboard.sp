@@ -1,4 +1,4 @@
-dashboard "ibm_security_group_dashboard" {
+dashboard "security_group_dashboard" {
 
   title = "IBM Security Group Dashboard"
   documentation = file("./dashboards/vpc/docs/security_group_dashboard.md")
@@ -10,22 +10,22 @@ dashboard "ibm_security_group_dashboard" {
   container {
 
     card {
-      sql = query.ibm_is_security_group_count.sql
+      sql = query.vpc_security_group_count.sql
       width = 2
     }
 
     card {
-      sql = query.ibm_is_security_group_unassociated_count.sql
+      sql = query.vpc_security_group_unassociated_count.sql
       width = 2
     }
 
     card {
-      sql = query.ibm_is_security_group_unrestricted_inbound_count.sql
+      sql = query.vpc_security_group_unrestricted_inbound_count.sql
       width = 2
     }
 
     card {
-      sql = query.ibm_is_security_group_unrestricted_outbound_count.sql
+      sql = query.vpc_security_group_unrestricted_outbound_count.sql
       width = 2
     }
 
@@ -39,7 +39,7 @@ dashboard "ibm_security_group_dashboard" {
       title = "Association Status"
       type  = "donut"
       width = 3
-      sql   = query.ibm_is_security_group_unassociated_status.sql
+      sql   = query.vpc_security_group_unassociated_status.sql
 
       series "count" {
         point "associated" {
@@ -55,7 +55,7 @@ dashboard "ibm_security_group_dashboard" {
       title = "With Unrestricted Inbound (Excludes ICMP)"
       type  = "donut"
       width = 3
-      sql   = query.ibm_is_security_group_unrestricted_inbound_status.sql
+      sql   = query.vpc_security_group_unrestricted_inbound_status.sql
 
       series "count" {
         point "restricted" {
@@ -71,7 +71,7 @@ dashboard "ibm_security_group_dashboard" {
       title = "With Unrestricted Outbound (Excludes ICMP)"
       type  = "donut"
       width = 3
-      sql   = query.ibm_is_security_group_unrestricted_outbound_status.sql
+      sql   = query.vpc_security_group_unrestricted_outbound_status.sql
 
       series "count" {
         point "restricted" {
@@ -91,35 +91,35 @@ dashboard "ibm_security_group_dashboard" {
 
     chart {
       title = "Security Groups by Account"
-      sql   = query.ibm_is_security_group_by_acount.sql
+      sql   = query.vpc_security_group_by_acount.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Security Groups by Region"
-      sql = query.ibm_is_security_group_by_region.sql
+      sql = query.vpc_security_group_by_region.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Security Groups by Resource Group"
-      sql = query.ibm_is_security_group_by_resource_group.sql
+      sql = query.vpc_security_group_by_resource_group.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Security Groups by Age"
-      sql = query.ibm_is_security_group_by_creation_month.sql
+      sql = query.vpc_security_group_by_creation_month.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Security Groups by VPC"
-      sql = query.ibm_is_security_group_by_vpc.sql
+      sql = query.vpc_security_group_by_vpc.sql
       type  = "column"
       width = 4
     }
@@ -130,13 +130,13 @@ dashboard "ibm_security_group_dashboard" {
 
 # Card Queries
 
-query "ibm_is_security_group_count" {
+query "vpc_security_group_count" {
   sql = <<-EOQ
     select count(*) as "Security Groups" from ibm_is_security_group;
   EOQ
 }
 
-query "ibm_is_security_group_unassociated_count" {
+query "vpc_security_group_unassociated_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -149,7 +149,7 @@ query "ibm_is_security_group_unassociated_count" {
   EOQ
 }
 
-query "ibm_is_security_group_unrestricted_inbound_count" {
+query "vpc_security_group_unrestricted_inbound_count" {
   sql = <<-EOQ
     with inbound_sg as (
       select
@@ -180,7 +180,7 @@ query "ibm_is_security_group_unrestricted_inbound_count" {
   EOQ
 }
 
-query "ibm_is_security_group_unrestricted_outbound_count" {
+query "vpc_security_group_unrestricted_outbound_count" {
   sql = <<-EOQ
     with outbound_sg as (
       select
@@ -213,7 +213,7 @@ query "ibm_is_security_group_unrestricted_outbound_count" {
 
 # Assessment Queries
 
-query "ibm_is_security_group_unassociated_status" {
+query "vpc_security_group_unassociated_status" {
   sql = <<-EOQ
     with associated_sg as (
       select
@@ -231,7 +231,7 @@ query "ibm_is_security_group_unassociated_status" {
   EOQ
 }
 
-query "ibm_is_security_group_unrestricted_inbound_status" {
+query "vpc_security_group_unrestricted_inbound_status" {
   sql = <<-EOQ
     with inbound_sg as (
       select
@@ -259,7 +259,7 @@ query "ibm_is_security_group_unrestricted_inbound_status" {
   EOQ
 }
 
-query "ibm_is_security_group_unrestricted_outbound_status" {
+query "vpc_security_group_unrestricted_outbound_status" {
   sql = <<-EOQ
     with outbound_sg as (
       select
@@ -289,7 +289,7 @@ query "ibm_is_security_group_unrestricted_outbound_status" {
 
 # Analysis Queries
 
-query "ibm_is_security_group_by_acount" {
+query "vpc_security_group_by_acount" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -306,7 +306,7 @@ query "ibm_is_security_group_by_acount" {
   EOQ
 }
 
-query "ibm_is_security_group_by_region" {
+query "vpc_security_group_by_region" {
   sql = <<-EOQ
     select
       region as "Region",
@@ -320,7 +320,7 @@ query "ibm_is_security_group_by_region" {
   EOQ
 }
 
-query "ibm_is_security_group_by_resource_group" {
+query "vpc_security_group_by_resource_group" {
   sql = <<-EOQ
     select
       resource_group ->> 'name' as "Resource Group",
@@ -334,7 +334,7 @@ query "ibm_is_security_group_by_resource_group" {
   EOQ
 }
 
-query "ibm_is_security_group_by_vpc" {
+query "vpc_security_group_by_vpc" {
   sql = <<-EOQ
     select
       vpc ->> 'id' as "VPC",
@@ -348,7 +348,7 @@ query "ibm_is_security_group_by_vpc" {
   EOQ
 }
 
-query "ibm_is_security_group_by_creation_month" {
+query "vpc_security_group_by_creation_month" {
   sql = <<-EOQ
     with security_group as (
       select

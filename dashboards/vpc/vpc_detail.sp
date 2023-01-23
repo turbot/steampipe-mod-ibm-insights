@@ -1,4 +1,4 @@
-dashboard "ibm_vpc_detail" {
+dashboard "vpc_detail" {
 
   title = "IBM VPC Detail"
   documentation = file("./dashboards/vpc/docs/vpc_detail.md")
@@ -9,7 +9,7 @@ dashboard "ibm_vpc_detail" {
 
   input "vpc_crn" {
     title = "Select a VPC:"
-    sql   = query.ibm_is_vpc_input.sql
+    sql   = query.vpc_input.sql
     width = 4
   }
 
@@ -17,18 +17,14 @@ dashboard "ibm_vpc_detail" {
 
     card {
       width = 2
-      query = query.ibm_is_vpc_num_ips_for_vpc
-      args  = {
-        crn = self.input.vpc_crn.value
-      }
+      query = query.vpc_num_ips_for_vpc
+      args  = [self.input.vpc_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_subnet_count_for_vpc
-      args  = {
-        crn = self.input.vpc_crn.value
-      }
+      query = query.vpc_subnet_count
+      args  = [self.input.vpc_crn.value]
     }
 
   }
@@ -43,19 +39,15 @@ dashboard "ibm_vpc_detail" {
         title = "Overview"
         type  = "line"
         width = 6
-        query = query.ibm_is_vpc_overview
-        args  = {
-          crn = self.input.vpc_crn.value
-        }
+        query = query.vpc_overview
+        args  = [self.input.vpc_crn.value]
       }
 
       table {
         title = "Tags"
         width = 6
-        query = query.ibm_is_vpc_tags
-        args  = {
-          crn = self.input.vpc_crn.value
-        }
+        query = query.vpc_tags
+        args  = [self.input.vpc_crn.value]
       }
 
     }
@@ -66,10 +58,8 @@ dashboard "ibm_vpc_detail" {
 
       table {
         title = "Address Prefixes"
-        query = query.ibm_is_vpc_address_prefixes
-        args  = {
-          crn = self.input.vpc_crn.value
-        }
+        query = query.vpc_address_prefixes
+        args  = [self.input.vpc_crn.value]
       }
 
     }
@@ -84,18 +74,14 @@ dashboard "ibm_vpc_detail" {
       title = "Subnets by Zone"
       type  = "column"
       width = 4
-      query = query.ibm_is_vpc_subnet_by_zone
-      args = {
-        crn = self.input.vpc_crn.value
-      }
+      query = query.vpc_subnet_by_zone
+      args = [self.input.vpc_crn.value]
     }
 
     table {
-      query = query.ibm_is_vpc_subnets_for_vpc
+      query = query.vpc_subnets_for_vpc
       width = 8
-      args = {
-        crn = self.input.vpc_crn.value
-      }
+      args = [self.input.vpc_crn.value]
     }
 
   }
@@ -108,10 +94,8 @@ dashboard "ibm_vpc_detail" {
       base  = flow.nacl_flow
       title = "Network ACLs Inbound Analysis"
       width = 6
-      query = query.ibm_inbound_nacl_for_vpc_sankey
-      args = {
-        crn = self.input.vpc_crn.value
-      }
+      query = query.vpc_inbound_nacl_sankey
+      args = [self.input.vpc_crn.value]
     }
 
 
@@ -119,45 +103,37 @@ dashboard "ibm_vpc_detail" {
       base  = flow.nacl_flow
       title = "Network ACLs Outbound Analysis"
       width = 6
-      query = query.ibm_outbound_nacl_for_vpc_sankey
-      args = {
-        crn = self.input.vpc_crn.value
-      }
+      query = query.vpc_outbound_nacl_sankey
+      args = [self.input.vpc_crn.value]
     }
 
   }
 
   table {
     title = "Network ACLs"
-    query = query.ibm_is_vpc_network_acl
-    args = {
-      crn = self.input.vpc_crn.value
-    }
+    query = query.vpc_network_acl
+    args = [self.input.vpc_crn.value]
   }
 
 
   table {
     title = "Cloud Service Endpoint Source Addresses"
-    query = query.ibm_is_vpc_cse_source_ip_addresses
-    args = {
-      crn = self.input.vpc_crn.value
-    }
+    query = query.vpc_cse_source_ip_addresses
+    args = [self.input.vpc_crn.value]
   }
 
 
   table {
     title = "Security Groups"
-    query = query.ibm_is_vpc_security_groups
-    args = {
-      crn = self.input.vpc_crn.value
-    }
+    query = query.vpc_security_groups
+    args = [self.input.vpc_crn.value]
 
     column "CRN" {
       display = "none"
     }
 
     column "Name" {
-      href = "${dashboard.ibm_security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
+      href = "${dashboard.security_group_detail.url_path}?input.security_group_crn={{.CRN | @uri}}"
     }
   }
 }
@@ -177,7 +153,7 @@ flow "nacl_flow" {
 
 }
 
-query "ibm_is_vpc_input" {
+query "vpc_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -194,7 +170,7 @@ query "ibm_is_vpc_input" {
   EOQ
 }
 
-query "ibm_subnet_count_for_vpc" {
+query "vpc_subnet_count" {
   sql = <<-EOQ
     select
       'Subnets' as label,
@@ -206,11 +182,9 @@ query "ibm_subnet_count_for_vpc" {
     where
       v.crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_num_ips_for_vpc" {
+query "vpc_num_ips_for_vpc" {
   sql = <<-EOQ
     with cidrs as (
       select
@@ -227,11 +201,9 @@ query "ibm_is_vpc_num_ips_for_vpc" {
     from
       cidrs;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_subnets_for_vpc" {
+query "vpc_subnets_for_vpc" {
   sql = <<-EOQ
     with subnets as (
       select
@@ -260,11 +232,9 @@ query "ibm_is_vpc_subnets_for_vpc" {
     order by
       id;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_security_groups" {
+query "vpc_security_groups" {
   sql = <<-EOQ
     select
       name as "Name",
@@ -278,11 +248,9 @@ query "ibm_is_vpc_security_groups" {
     order by
       name;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_network_acl" {
+query "vpc_network_acl" {
   sql = <<-EOQ
     select
       name  as "Name",
@@ -295,11 +263,9 @@ query "ibm_is_vpc_network_acl" {
     order by
       name;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_overview" {
+query "vpc_overview" {
   sql = <<-EOQ
     select
       name as "Name",
@@ -316,11 +282,9 @@ query "ibm_is_vpc_overview" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_address_prefixes" {
+query "vpc_address_prefixes" {
   sql = <<-EOQ
     select
       (trim('"' FROM (p ->> 'cidr')))::cidr as "Address Prefix",
@@ -331,11 +295,9 @@ query "ibm_is_vpc_address_prefixes" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_subnet_by_zone" {
+query "vpc_subnet_by_zone" {
   sql   = <<-EOQ
     select
       zone ->> 'name' as Zone,
@@ -349,11 +311,9 @@ query "ibm_is_vpc_subnet_by_zone" {
     order by
       zone ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_cse_source_ip_addresses" {
+query "vpc_cse_source_ip_addresses" {
   sql = <<-EOQ
     select
       i -> 'ip' ->> 'address' as "IP Address",
@@ -365,11 +325,9 @@ query "ibm_is_vpc_cse_source_ip_addresses" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_inbound_nacl_for_vpc_sankey" {
+query "vpc_inbound_nacl_sankey" {
   sql = <<-EOQ
 
     with aces as (
@@ -474,11 +432,9 @@ query "ibm_inbound_nacl_for_vpc_sankey" {
     from aces;
 
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_outbound_nacl_for_vpc_sankey" {
+query "vpc_outbound_nacl_sankey" {
   sql = <<-EOQ
 
     with aces as (
@@ -589,11 +545,9 @@ query "ibm_outbound_nacl_for_vpc_sankey" {
     from aces;
 
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_vpc_tags" {
+query "vpc_tags" {
   sql = <<-EOQ
     select
       (trim('"' FROM tag::text)) as "User Tag"
@@ -605,6 +559,4 @@ query "ibm_is_vpc_tags" {
     order by
       tag;
   EOQ
-
-  param "crn" {}
 }

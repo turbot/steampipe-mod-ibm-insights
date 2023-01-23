@@ -1,4 +1,4 @@
-dashboard "ibm_blockstorage_volume_report_age" {
+dashboard "blockstorage_volume_report_age" {
 
   title         = "IBM Block Storage Volume Age Report"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_report_age.md")
@@ -12,37 +12,37 @@ dashboard "ibm_blockstorage_volume_report_age" {
 
     card {
       width = 2
-      sql   = query.ibm_is_volume_count.sql
+      sql   = query.blockstorage_volume_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_is_volume_24_hours_count.sql
+      sql   = query.blockstorage_volume_24_hours_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_is_volume_30_days_count.sql
+      sql   = query.blockstorage_volume_30_days_count.sql
     }
 
     card {
       type  = "info"
       width = 2
-      sql   = query.ibm_is_volume_30_90_days_count.sql
+      sql   = query.blockstorage_volume_30_90_days_count.sql
     }
 
     card {
       width = 2
       type  = "info"
-      sql   = query.ibm_is_volume_90_365_days_count.sql
+      sql   = query.blockstorage_volume_90_365_days_count.sql
     }
 
     card {
       width = 2
       type  = "info"
-      sql   = query.ibm_is_volume_1_year_count.sql
+      sql   = query.blockstorage_volume_1_year_count.sql
     }
 
   }
@@ -57,15 +57,15 @@ dashboard "ibm_blockstorage_volume_report_age" {
     }
 
     column "Name" {
-      href = "${dashboard.ibm_blockstorage_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
+      href = "${dashboard.blockstorage_volume_detail.url_path}?input.volume_arn={{.CRN | @uri}}"
     }
 
-    sql = query.ibm_is_volume_age_table.sql
+    sql = query.blockstorage_volume_age_table.sql
   }
 
 }
 
-query "ibm_is_volume_24_hours_count" {
+query "blockstorage_volume_24_hours_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -77,7 +77,7 @@ query "ibm_is_volume_24_hours_count" {
   EOQ
 }
 
-query "ibm_is_volume_30_days_count" {
+query "blockstorage_volume_30_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -90,7 +90,7 @@ query "ibm_is_volume_30_days_count" {
   EOQ
 }
 
-query "ibm_is_volume_30_90_days_count" {
+query "blockstorage_volume_30_90_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -103,7 +103,7 @@ query "ibm_is_volume_30_90_days_count" {
   EOQ
 }
 
-query "ibm_is_volume_90_365_days_count" {
+query "blockstorage_volume_90_365_days_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -116,7 +116,7 @@ query "ibm_is_volume_90_365_days_count" {
   EOQ
 }
 
-query "ibm_is_volume_1_year_count" {
+query "blockstorage_volume_1_year_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -128,7 +128,7 @@ query "ibm_is_volume_1_year_count" {
   EOQ
 }
 
-query "ibm_is_volume_age_table" {
+query "blockstorage_volume_age_table" {
   sql = <<-EOQ
     select
       v.name as "Name",

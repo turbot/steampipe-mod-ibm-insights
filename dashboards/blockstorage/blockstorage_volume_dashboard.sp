@@ -1,4 +1,4 @@
-dashboard "ibm_blockstorage_volume_dashboard" {
+dashboard "blockstorage_volume_dashboard" {
 
   title         = "IBM Block Storage Volume Dashboard"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_dashboard.md")
@@ -11,18 +11,18 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     # Analysis
     card {
-      sql   = query.ibm_is_volume_count.sql
+      sql   = query.blockstorage_volume_count.sql
       width = 2
     }
 
     card {
-      sql   = query.ibm_is_volume_storage_total.sql
+      sql   = query.blockstorage_volume_storage_total.sql
       width = 2
     }
 
     # Assessments
     card {
-      sql   = query.ibm_is_volume_unattached_count.sql
+      sql   = query.blockstorage_volume_unattached_count.sql
       width = 2
     }
 
@@ -34,7 +34,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Attachment Status"
-      sql   = query.ibm_is_volume_attachment_status.sql
+      sql   = query.blockstorage_volume_attachment_status.sql
       type  = "donut"
       width = 3
 
@@ -56,42 +56,42 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Volumes by Account"
-      sql   = query.ibm_is_volume_by_account.sql
+      sql   = query.blockstorage_volume_by_account.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Volumes by Region"
-      sql   = query.ibm_is_volume_by_region.sql
+      sql   = query.blockstorage_volume_by_region.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Volumes by Zone"
-      sql   = query.ibm_is_volume_by_zone.sql
+      sql   = query.blockstorage_volume_by_zone.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Volumes by Age"
-      sql   = query.ibm_is_volume_by_creation_month.sql
+      sql   = query.blockstorage_volume_by_creation_month.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Volumes by Encryption Type"
-      sql   = query.ibm_is_volume_by_encryption_type.sql
+      sql   = query.blockstorage_volume_by_encryption_type.sql
       type  = "column"
       width = 4
     }
 
     chart {
       title = "Volumes by Profile"
-      sql   = query.ibm_is_volume_by_profile.sql
+      sql   = query.blockstorage_volume_by_profile.sql
       type  = "column"
       width = 4
 
@@ -103,7 +103,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Storage by Account (GB)"
-      sql   = query.ibm_is_volume_storage_by_account.sql
+      sql   = query.blockstorage_volume_storage_by_account.sql
       type  = "column"
       width = 4
 
@@ -114,7 +114,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Storage by Region (GB)"
-      sql   = query.ibm_is_volume_storage_by_region.sql
+      sql   = query.blockstorage_volume_storage_by_region.sql
       type  = "column"
       width = 4
 
@@ -125,7 +125,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Storage by Zone (GB)"
-      sql   = query.ibm_is_volume_storage_by_zone.sql
+      sql   = query.blockstorage_volume_storage_by_zone.sql
       type  = "column"
       width = 4
 
@@ -136,7 +136,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Storage by Age (GB)"
-      sql   = query.ibm_is_volume_storage_by_creation_month.sql
+      sql   = query.blockstorage_volume_storage_by_creation_month.sql
       type  = "column"
       width = 4
 
@@ -147,7 +147,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
     chart {
       title = "Storage by Profile (GB)"
-      sql   = query.ibm_is_volume_storage_by_profile.sql
+      sql   = query.blockstorage_volume_storage_by_profile.sql
       type  = "column"
       width = 4
 
@@ -162,7 +162,7 @@ dashboard "ibm_blockstorage_volume_dashboard" {
 
 # Card Queries
 
-query "ibm_is_volume_count" {
+query "blockstorage_volume_count" {
   sql = <<-EOQ
     select
       count(*) as "Volumes"
@@ -171,7 +171,7 @@ query "ibm_is_volume_count" {
   EOQ
 }
 
-query "ibm_is_volume_storage_total" {
+query "blockstorage_volume_storage_total" {
   sql = <<-EOQ
     select
       sum(capacity) as "Total Storage (GB)"
@@ -180,7 +180,7 @@ query "ibm_is_volume_storage_total" {
   EOQ
 }
 
-query "ibm_is_volume_unattached_count" {
+query "blockstorage_volume_unattached_count" {
   sql = <<-EOQ
     select
       count(*) as value,
@@ -196,7 +196,7 @@ query "ibm_is_volume_unattached_count" {
 
 # Assessment Queries
 
-query "ibm_is_volume_attachment_status" {
+query "blockstorage_volume_attachment_status" {
   sql = <<-EOQ
     with attachment_state as (
       select
@@ -219,7 +219,7 @@ query "ibm_is_volume_attachment_status" {
 
 # Analysis Queries
 
-query "ibm_is_volume_by_account" {
+query "blockstorage_volume_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -236,7 +236,7 @@ query "ibm_is_volume_by_account" {
   EOQ
 }
 
-query "ibm_is_volume_storage_by_account" {
+query "blockstorage_volume_storage_by_account" {
   sql = <<-EOQ
     select
       a.name as "account",
@@ -253,7 +253,7 @@ query "ibm_is_volume_storage_by_account" {
   EOQ
 }
 
-query "ibm_is_volume_by_region" {
+query "blockstorage_volume_by_region" {
   sql = <<-EOQ
     select
       region as "Region",
@@ -267,7 +267,7 @@ query "ibm_is_volume_by_region" {
   EOQ
 }
 
-query "ibm_is_volume_by_zone" {
+query "blockstorage_volume_by_zone" {
   sql = <<-EOQ
     select
       zone -> 'name' as "Zone",
@@ -281,7 +281,7 @@ query "ibm_is_volume_by_zone" {
   EOQ
 }
 
-query "ibm_is_volume_by_profile" {
+query "blockstorage_volume_by_profile" {
   sql = <<-EOQ
     select
       profile -> 'name' as "Profile",
@@ -296,7 +296,7 @@ query "ibm_is_volume_by_profile" {
 }
 
 
-query "ibm_is_volume_storage_by_region" {
+query "blockstorage_volume_storage_by_region" {
   sql = <<-EOQ
     select
       region as "Region",
@@ -310,7 +310,7 @@ query "ibm_is_volume_storage_by_region" {
   EOQ
 }
 
-query "ibm_is_volume_storage_by_zone" {
+query "blockstorage_volume_storage_by_zone" {
   sql = <<-EOQ
     select
       zone -> 'name' as "Zone",
@@ -324,7 +324,7 @@ query "ibm_is_volume_storage_by_zone" {
   EOQ
 }
 
-query "ibm_is_volume_storage_by_profile" {
+query "blockstorage_volume_storage_by_profile" {
   sql = <<-EOQ
     select
       profile -> 'name' as "Profile",
@@ -338,7 +338,7 @@ query "ibm_is_volume_storage_by_profile" {
   EOQ
 }
 
-query "ibm_is_volume_by_creation_month" {
+query "blockstorage_volume_by_creation_month" {
   sql = <<-EOQ
     with volumes as (
       select
@@ -383,7 +383,7 @@ query "ibm_is_volume_by_creation_month" {
   EOQ
 }
 
-query "ibm_is_volume_storage_by_creation_month" {
+query "blockstorage_volume_storage_by_creation_month" {
   sql = <<-EOQ
     with volumes as (
       select
@@ -429,7 +429,7 @@ query "ibm_is_volume_storage_by_creation_month" {
   EOQ
 }
 
-query "ibm_is_volume_by_encryption_type" {
+query "blockstorage_volume_by_encryption_type" {
   sql = <<-EOQ
     select
       encryption as "Encryption Type",

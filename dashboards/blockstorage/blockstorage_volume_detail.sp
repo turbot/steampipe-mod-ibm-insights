@@ -1,4 +1,4 @@
-dashboard "ibm_blockstorage_volume_detail" {
+dashboard "blockstorage_volume_detail" {
 
   title         = "IBM Block Storage Volume Detail"
   documentation = file("./dashboards/blockstorage/docs/blockstorage_volume_detail.md")
@@ -9,7 +9,7 @@ dashboard "ibm_blockstorage_volume_detail" {
 
   input "volume_crn" {
     title = "Select a volume:"
-    sql   = query.ibm_is_volume_input.sql
+    sql   = query.blockstorage_volume_input.sql
     width = 4
   }
 
@@ -17,26 +17,20 @@ dashboard "ibm_blockstorage_volume_detail" {
 
     card {
       width = 2
-      query = query.ibm_is_volume_storage
-      args = {
-        crn = self.input.volume_crn.value
-      }
+      query = query.blockstorage_volume_storage
+      args = [self.input.volume_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_volume_iops
-      args = {
-        crn = self.input.volume_crn.value
-      }
+      query = query.blockstorage_volume_iops
+      args = [self.input.volume_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_is_volume_attached_instances_count
-      args = {
-        crn = self.input.volume_crn.value
-      }
+      query = query.blockstorage_volume_attached_instances_count
+      args = [self.input.volume_crn.value]
     }
 
 
@@ -52,19 +46,15 @@ dashboard "ibm_blockstorage_volume_detail" {
         title = "Overview"
         type  = "line"
         width = 6
-        query = query.ibm_is_volume_overview
-        args = {
-          crn = self.input.volume_crn.value
-        }
+        query = query.blockstorage_volume_overview
+        args = [self.input.volume_crn.value]
       }
 
       table {
         title = "Tags"
         width = 6
-        query = query.ibm_is_volume_tags
-        args = {
-          crn = self.input.volume_crn.value
-        }
+        query = query.blockstorage_volume_tags
+        args = [self.input.volume_crn.value]
       }
     }
 
@@ -74,34 +64,30 @@ dashboard "ibm_blockstorage_volume_detail" {
 
       table {
         title = "Attached To"
-        query = query.ibm_is_volume_attached_instances
-        args = {
-          crn = self.input.volume_crn.value
-        }
+        query = query.blockstorage_volume_attached_instances
+        args = [self.input.volume_crn.value]
 
         column "Instance CRN" {
           display = "none"
         }
 
         column "Instance Name" {
-          href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.'Instance CRN' | @uri}}"
+          href = "${dashboard.compute_instance_detail.url_path}?input.instance_crn={{.'Instance CRN' | @uri}}"
         }
       }
 
       table {
         title = "Encryption Details"
 
-        query = query.ibm_is_volume_encryption_status
-        args = {
-          crn = self.input.volume_crn.value
-        }
+        query = query.blockstorage_volume_encryption_status
+        args = [self.input.volume_crn.value]
       }
     }
   }
 
 }
 
-query "ibm_is_volume_input" {
+query "blockstorage_volume_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -118,7 +104,7 @@ query "ibm_is_volume_input" {
   EOQ
 }
 
-query "ibm_is_volume_storage" {
+query "blockstorage_volume_storage" {
   sql = <<-EOQ
     select
       'Capacity (GB)' as label,
@@ -128,11 +114,9 @@ query "ibm_is_volume_storage" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_iops" {
+query "blockstorage_volume_iops" {
   sql = <<-EOQ
     select
       'IOPS' as label,
@@ -142,11 +126,9 @@ query "ibm_is_volume_iops" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_state" {
+query "blockstorage_volume_state" {
   sql = <<-EOQ
     select
       'Status' as label,
@@ -156,11 +138,9 @@ query "ibm_is_volume_state" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_attached_instances_count" {
+query "blockstorage_volume_attached_instances_count" {
   sql = <<-EOQ
     select
       'Attached Instances' as label,
@@ -177,11 +157,9 @@ query "ibm_is_volume_attached_instances_count" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_encryption" {
+query "blockstorage_volume_encryption" {
   sql = <<-EOQ
     select
       'Encryption Type' as label,
@@ -191,11 +169,9 @@ query "ibm_is_volume_encryption" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_attached_instances" {
+query "blockstorage_volume_attached_instances" {
   sql = <<-EOQ
     select
       a -> 'instance' ->> 'name' as "Instance Name",
@@ -210,11 +186,9 @@ query "ibm_is_volume_attached_instances" {
     order by
       a -> 'instance' ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_encryption_status" {
+query "blockstorage_volume_encryption_status" {
   sql = <<-EOQ
     select
       case when encryption = 'user_managed' then 'User Managed' else 'Provider Managed' end as "Encryption Type",
@@ -224,11 +198,9 @@ query "ibm_is_volume_encryption_status" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_overview" {
+query "blockstorage_volume_overview" {
   sql = <<-EOQ
     select
       name as "Name",
@@ -246,11 +218,9 @@ query "ibm_is_volume_overview" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_is_volume_tags" {
+query "blockstorage_volume_tags" {
   sql = <<-EOQ
     select
       (trim('"' from tag::text)) as "User Tag"
@@ -262,6 +232,4 @@ query "ibm_is_volume_tags" {
     order by
       tag;
   EOQ
-
-  param "crn" {}
 }

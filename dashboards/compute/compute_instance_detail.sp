@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_detail" {
+dashboard "compute_instance_detail" {
 
   title         = "IBM Compute Instance Detail"
   documentation = file("./dashboards/compute/docs/compute_instance_detail.md")
@@ -9,7 +9,7 @@ dashboard "ibm_compute_instance_detail" {
 
   input "instance_crn" {
     title = "Select an instance:"
-    sql   = query.ibm_compute_instance_input.sql
+    sql   = query.compute_instance_input.sql
     width = 4
   }
 
@@ -17,50 +17,38 @@ dashboard "ibm_compute_instance_detail" {
 
     card {
       width = 2
-      query = query.ibm_compute_instance_status
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_status
+      args  = [self.input.instance_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_instance_total_vcpu_count
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_total_vcpu_count
+      args  = [self.input.instance_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_instance_memory
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_memory
+      args  = [self.input.instance_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_instance_bandwidth
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_bandwidth
+      args  = [self.input.instance_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_instance_architecture
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_architecture
+      args  = [self.input.instance_crn.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_public_instance
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_public_instance
+      args  = [self.input.instance_crn.value]
     }
 
   }
@@ -74,20 +62,16 @@ dashboard "ibm_compute_instance_detail" {
         title = "Overview"
         type  = "line"
         width = 6
-        query = query.ibm_compute_instance_overview
-        args = {
-          crn = self.input.instance_crn.value
-        }
+        query = query.compute_instance_overview
+        args = [self.input.instance_crn.value]
 
       }
 
       table {
         title = "Tags"
         width = 6
-        query = query.ibm_compute_instance_tags
-        args  = {
-          crn = self.input.instance_crn.value
-        }
+        query = query.compute_instance_tags
+        args  = [self.input.instance_crn.value]
       }
     }
     container {
@@ -95,18 +79,14 @@ dashboard "ibm_compute_instance_detail" {
 
       table {
         title = "Boot Volume"
-        query = query.ibm_compute_instance_boot_volume
-        args  = {
-          crn = self.input.instance_crn.value
-        }
+        query = query.compute_instance_boot_volume
+        args  = [self.input.instance_crn.value]
       }
 
       table {
         title = "Data Volumes"
-        query = query.ibm_compute_instance_data_volume
-        args  = {
-          crn = self.input.instance_crn.value
-        }
+        query = query.compute_instance_data_volume
+        args  = [self.input.instance_crn.value]
       }
     }
 
@@ -117,10 +97,8 @@ dashboard "ibm_compute_instance_detail" {
 
     table {
       title = "Instance Storage Disks"
-      query = query.ibm_compute_instance_disks
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_disks
+      args  = [self.input.instance_crn.value]
     }
 
   }
@@ -130,10 +108,8 @@ dashboard "ibm_compute_instance_detail" {
 
     table {
       title = "Image"
-      query = query.ibm_compute_instance_image
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_image
+      args  = [self.input.instance_crn.value]
     }
 
   }
@@ -145,10 +121,8 @@ dashboard "ibm_compute_instance_detail" {
 
     table {
       title = "Network Interfaces"
-      query = query.ibm_compute_instance_network_interfaces
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_network_interfaces
+      args  = [self.input.instance_crn.value]
     }
 
   }
@@ -158,26 +132,22 @@ dashboard "ibm_compute_instance_detail" {
     table {
       title = "VPC"
        width = 6
-      query = query.ibm_compute_instance_vpc
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_vpc
+      args  = [self.input.instance_crn.value]
     }
 
     table {
       title = "Zone"
        width = 6
-      query = query.ibm_compute_instance_zone
-      args  = {
-        crn = self.input.instance_crn.value
-      }
+      query = query.compute_instance_zone
+      args  = [self.input.instance_crn.value]
     }
 
   }
 
 }
 
-query "ibm_compute_instance_input" {
+query "compute_instance_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -194,7 +164,7 @@ query "ibm_compute_instance_input" {
   EOQ
 }
 
-query "ibm_compute_instance_status" {
+query "compute_instance_status" {
   sql = <<-EOQ
     select
       'Status' as label,
@@ -204,12 +174,9 @@ query "ibm_compute_instance_status" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
-
 }
 
-query "ibm_compute_instance_total_vcpu_count" {
+query "compute_instance_total_vcpu_count" {
   sql = <<-EOQ
     select
       'vCPUs' as label,
@@ -219,11 +186,9 @@ query "ibm_compute_instance_total_vcpu_count" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_memory" {
+query "compute_instance_memory" {
   sql = <<-EOQ
     select
       'Memory (GiB)' as label,
@@ -233,11 +198,9 @@ query "ibm_compute_instance_memory" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_bandwidth" {
+query "compute_instance_bandwidth" {
   sql = <<-EOQ
     select
       'Bandwidth (Mbps)' as label,
@@ -247,11 +210,9 @@ query "ibm_compute_instance_bandwidth" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_architecture" {
+query "compute_instance_architecture" {
   sql = <<-EOQ
     select
       'Architecture' as label,
@@ -261,11 +222,9 @@ query "ibm_compute_instance_architecture" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_public_instance" {
+query "compute_public_instance" {
   sql = <<-EOQ
     select
       'Public Access' as label,
@@ -276,11 +235,9 @@ query "ibm_compute_public_instance" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_image" {
+query "compute_instance_image" {
   sql = <<-EOQ
     select
       image ->> 'name' as "Name",
@@ -291,12 +248,10 @@ query "ibm_compute_instance_image" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
 
-query "ibm_compute_instance_overview" {
+query "compute_instance_overview" {
   sql = <<-EOQ
     select
       name as "Name",
@@ -312,12 +267,10 @@ query "ibm_compute_instance_overview" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
 
-query "ibm_compute_instance_boot_volume" {
+query "compute_instance_boot_volume" {
   sql = <<-EOQ
     select
       boot_volume_attachment -> 'volume' ->> 'name' as "Name",
@@ -328,14 +281,12 @@ query "ibm_compute_instance_boot_volume" {
       ibm_is_instance
     where
       crn = $1
-    order by 
+    order by
       boot_volume_attachment -> 'volume' ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_data_volume" {
+query "compute_instance_data_volume" {
   sql = <<-EOQ
     select
       a -> 'volume' ->> 'name' as "Name",
@@ -348,14 +299,12 @@ query "ibm_compute_instance_data_volume" {
     where
       a ->> 'id' <> boot_volume_attachment ->> 'id'
       and crn = $1
-    order by 
+    order by
       a -> 'volume' ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_disks" {
+query "compute_instance_disks" {
   sql = <<-EOQ
     select
       d ->> 'name' as "Name",
@@ -373,11 +322,9 @@ query "ibm_compute_instance_disks" {
     order by
       d ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_vpc" {
+query "compute_instance_vpc" {
   sql = <<-EOQ
     select
       vpc ->> 'name'  as "Name",
@@ -391,11 +338,9 @@ query "ibm_compute_instance_vpc" {
     order by
       vpc ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_network_interfaces" {
+query "compute_instance_network_interfaces" {
   sql = <<-EOQ
     select
       i ->> 'name' as "Name",
@@ -411,11 +356,9 @@ query "ibm_compute_instance_network_interfaces" {
     order by
       i ->> 'name';
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_zone" {
+query "compute_instance_zone" {
   sql = <<-EOQ
     select
       zone ->> 'name' as "Name",
@@ -425,11 +368,9 @@ query "ibm_compute_instance_zone" {
     where
       crn = $1;
   EOQ
-
-  param "crn" {}
 }
 
-query "ibm_compute_instance_tags" {
+query "compute_instance_tags" {
   sql = <<-EOQ
     select
       (trim('"' FROM tag::text)) as "User Tags"
@@ -441,6 +382,4 @@ query "ibm_compute_instance_tags" {
     order by
       tag;
   EOQ
-
-  param "crn" {}
 }

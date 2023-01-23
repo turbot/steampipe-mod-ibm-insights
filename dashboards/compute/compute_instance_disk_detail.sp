@@ -1,4 +1,4 @@
-dashboard "ibm_compute_instance_disk_detail" {
+dashboard "compute_instance_disk_detail" {
 
   title         = "IBM Compute Instance Disk Detail"
   documentation = file("./dashboards/compute/docs/compute_instance_disk_detail.md")
@@ -9,7 +9,7 @@ dashboard "ibm_compute_instance_disk_detail" {
 
   input "disk_id" {
     title = "Select a disk:"
-    query = query.ibm_compute_instance_disk_input
+    query = query.compute_instance_disk_input
     width = 4
   }
 
@@ -17,18 +17,14 @@ dashboard "ibm_compute_instance_disk_detail" {
 
     card {
       width = 2
-      query = query.ibm_compute_instance_disk_storage
-      args = {
-        id = self.input.disk_id.value
-      }
+      query = query.compute_instance_disk_storage
+      args = [self.input.disk_id.value]
     }
 
     card {
       width = 2
-      query = query.ibm_compute_unused_instance_disk
-      args = {
-        id = self.input.disk_id.value
-      }
+      query = query.compute_unused_instance_disk
+      args = [self.input.disk_id.value]
     }
   }
 
@@ -40,26 +36,22 @@ dashboard "ibm_compute_instance_disk_detail" {
         title = "Overview"
         type  = "line"
         width = 4
-        query = query.ibm_compute_instance_disk_overview
-        args = {
-          id = self.input.disk_id.value
-        }
+        query = query.compute_instance_disk_overview
+        args = [self.input.disk_id.value]
       }
 
       table {
         title = "Attached To"
         width = 8
-        query = query.ibm_compute_instance_disk_attached_instances
-        args = {
-          id = self.input.disk_id.value
-        }
+        query = query.compute_instance_disk_attached_instances
+        args = [self.input.disk_id.value]
 
         column "CRN" {
           display = "none"
         }
 
         column "Instance Name" {
-          href = "${dashboard.ibm_compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
+          href = "${dashboard.compute_instance_detail.url_path}?input.instance_crn={{.CRN | @uri}}"
         }
       }
     }
@@ -67,7 +59,7 @@ dashboard "ibm_compute_instance_disk_detail" {
 }
 
 
-query "ibm_compute_instance_disk_input" {
+query "compute_instance_disk_input" {
   sql = <<-EOQ
     select
       title as label,
@@ -84,7 +76,7 @@ query "ibm_compute_instance_disk_input" {
   EOQ
 }
 
-query "ibm_compute_instance_disk_storage" {
+query "compute_instance_disk_storage" {
   sql = <<-EOQ
     select
       'Storage (GB)' as label,
@@ -94,11 +86,9 @@ query "ibm_compute_instance_disk_storage" {
     where
       id = $1;
   EOQ
-
-  param "id" {}
 }
 
-query "ibm_compute_unused_instance_disk" {
+query "compute_unused_instance_disk" {
   sql = <<-EOQ
     select
       'Status' as label,
@@ -111,11 +101,9 @@ query "ibm_compute_unused_instance_disk" {
       d.instance_id = i.id
       and d.id = $1;
   EOQ
-
-  param "id" {}
 }
 
-query "ibm_compute_instance_disk_overview" {
+query "compute_instance_disk_overview" {
   sql = <<-EOQ
     select
       name as "Name",
@@ -130,11 +118,9 @@ query "ibm_compute_instance_disk_overview" {
     where
       id = $1;
   EOQ
-
-  param "id" {}
 }
 
-query "ibm_compute_instance_disk_attached_instances" {
+query "compute_instance_disk_attached_instances" {
   sql = <<-EOQ
     select
       i.name as "Instance Name",
@@ -151,6 +137,4 @@ query "ibm_compute_instance_disk_attached_instances" {
     order by
       i.name;
   EOQ
-
-  param "id" {}
 }
