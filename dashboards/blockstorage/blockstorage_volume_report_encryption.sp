@@ -12,17 +12,17 @@ dashboard "blockstorage_volume_report_encryption" {
 
     card {
       query = query.blockstorage_volume_count
-      width = 2
+      width = 3
     }
 
     card {
       query = query.blockstorage_volume_provider_managed_encryption_count
-      width = 2
+      width = 3
     }
 
     card {
       query = query.blockstorage_volume_user_managed_encryption_count
-      width = 2
+      width = 3
     }
 
   }

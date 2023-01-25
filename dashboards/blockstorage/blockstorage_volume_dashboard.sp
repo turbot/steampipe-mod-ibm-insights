@@ -12,18 +12,18 @@ dashboard "blockstorage_volume_dashboard" {
     # Analysis
     card {
       sql   = query.blockstorage_volume_count.sql
-      width = 2
+      width = 3
     }
 
     card {
       sql   = query.blockstorage_volume_storage_total.sql
-      width = 2
+      width = 3
     }
 
     # Assessments
     card {
       sql   = query.blockstorage_volume_unattached_count.sql
-      width = 2
+      width = 3
     }
 
   }

@@ -13,19 +13,19 @@ dashboard "compute_instance_disk_dashboard" {
 
     card {
       query = query.compute_instance_disk_count
-      width = 2
+      width = 3
     }
 
     card {
       query = query.compute_instance_disk_total_storage
-      width = 2
+      width = 3
     }
 
     # Assessments
 
     card {
       query = query.compute_unused_instance_disk_count
-      width = 2
+      width = 3
     }
   }
 

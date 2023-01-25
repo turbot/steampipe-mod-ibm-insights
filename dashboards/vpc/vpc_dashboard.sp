@@ -12,18 +12,18 @@ dashboard "vpc_dashboard" {
     # Analysis
     card {
       sql   = query.vpc_count.sql
-      width = 2
+      width = 3
     }
 
     card {
       sql = query.vpc_classic_infrastructure_count.sql
-      width = 2
+      width = 3
     }
 
     # Assessments
     card {
       sql = query.vpc_no_subnet_count.sql
-      width = 2
+      width = 3
     }
 
   }

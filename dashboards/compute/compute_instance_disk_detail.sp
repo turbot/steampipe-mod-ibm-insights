@@ -16,13 +16,13 @@ dashboard "compute_instance_disk_detail" {
   container {
 
     card {
-      width = 2
+      width = 3
       query = query.compute_instance_disk_storage
       args = [self.input.disk_id.value]
     }
 
     card {
-      width = 2
+      width = 3
       query = query.compute_unused_instance_disk
       args = [self.input.disk_id.value]
     }

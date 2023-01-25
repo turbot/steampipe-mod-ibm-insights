@@ -11,22 +11,22 @@ dashboard "security_group_dashboard" {
 
     card {
       sql = query.vpc_security_group_count.sql
-      width = 2
+      width = 3
     }
 
     card {
       sql = query.vpc_security_group_unassociated_count.sql
-      width = 2
+      width = 3
     }
 
     card {
       sql = query.vpc_security_group_unrestricted_inbound_count.sql
-      width = 2
+      width = 3
     }
 
     card {
       sql = query.vpc_security_group_unrestricted_outbound_count.sql
-      width = 2
+      width = 3
     }
 
   }

@@ -16,19 +16,19 @@ dashboard "blockstorage_volume_detail" {
   container {
 
     card {
-      width = 2
+      width = 3
       query = query.blockstorage_volume_storage
       args = [self.input.volume_crn.value]
     }
 
     card {
-      width = 2
+      width = 3
       query = query.blockstorage_volume_iops
       args = [self.input.volume_crn.value]
     }
 
     card {
-      width = 2
+      width = 3
       query = query.blockstorage_volume_attached_instances_count
       args = [self.input.volume_crn.value]
     }

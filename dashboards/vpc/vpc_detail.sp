@@ -16,13 +16,13 @@ dashboard "vpc_detail" {
   container {
 
     card {
-      width = 2
+      width = 3
       query = query.vpc_num_ips_for_vpc
       args  = [self.input.vpc_crn.value]
     }
 
     card {
-      width = 2
+      width = 3
       query = query.vpc_subnet_count
       args  = [self.input.vpc_crn.value]
     }
