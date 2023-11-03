@@ -1,3 +1,9 @@
+## v0.4 [2023-11-03]
+
+_Breaking changes_
+
+- Updated the plugin dependency section of the mod to use `min_version` instead of `version`. ([#41](https://github.com/turbot/steampipe-mod-ibm-insights/pull/41))
+
 ## v0.3 [2022-10-14]
 
 _Bug fixes_
