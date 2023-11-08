@@ -4,6 +4,10 @@ _Breaking changes_
 
 - Updated the plugin dependency section of the mod to use `min_version` instead of `version`. ([#41](https://github.com/turbot/steampipe-mod-ibm-insights/pull/41))
 
+_Bug fixes_
+
+- Fixed dashboard localhost URLs in README and index doc. ([#37](https://github.com/turbot/steampipe-mod-ibm-insights/pull/37))
+
 ## v0.3 [2022-10-14]
 
 _Bug fixes_
