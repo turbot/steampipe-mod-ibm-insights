@@ -1,71 +1,72 @@
-# IBM Cloud Insights Mod for Steampipe
+# IBM Cloud Insights Mod for Powerpipe
+
+> [!IMPORTANT]  
+> [Powerpipe](https://powerpipe.io) is now the preferred way to run this mod! [Migrating from Steampipe →](https://powerpipe.io/blog/migrating-from-steampipe)
+>
+> All v0.x versions of this mod will work in both Steampipe and Powerpipe, but v1.0.0 onwards will be in Powerpipe format only.
 
 An IBM Cloud dashboarding tool that can be used to view dashboards and reports across all of your IBM Cloud accounts.
 
 ![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png)
 
-## Overview
+## Documentation
 
-Dashboards can help answer questions like:
+- **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/controls)**
+- **[Named queries →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/queries)**
 
-- How many resources do I have?
-- How old are my resources?
-- Are there any publicly accessible resources?
-- Is encryption enabled and what keys are used for encryption?
-
-Dashboards are available for Block Storage, Compute, Disk, KMS Key, and VPC services.
-
-## Getting started
+## Getting Started
 
 ### Installation
 
-Download and install Steampipe (https://steampipe.io/downloads). Or use Brew:
+Install Powerpipe (https://powerpipe.io/downloads), or use Brew:
 
 ```sh
-brew tap turbot/tap
-brew install steampipe
+brew install turbot/tap/powerpipe
 ```
 
-Install the IBM Cloud plugin with [Steampipe](https://steampipe.io):
+This mod also requires [Steampipe](https://steampipe.io) with the [IBM Cloud plugin](https://hub.steampipe.io/plugins/turbot/ibm) as the data source. Install Steampipe (https://steampipe.io/downloads), or use Brew:
 
 ```sh
+brew install turbot/tap/steampipe
 steampipe plugin install ibm
 ```
 
-Clone:
+Finally, install the mod:
 
 ```sh
-git clone https://github.com/turbot/steampipe-mod-ibm-insights.git
-cd steampipe-mod-ibm-insights
+mkdir dashboards
+cd dashboards
+powerpipe mod init
+powerpipe mod install github.com/turbot/steampipe-mod-ibm-insights
 ```
 
-### Usage
+### Browsing Dashboards
 
-Start your dashboard server to get started:
+Start Steampipe as the data source:
 
 ```sh
-steampipe dashboard
+steampipe service start
 ```
 
-By default, the dashboard interface will then be launched in a new browser window at http://localhost:9194. From here, you can view dashboards and reports.
+Start the dashboard server:
 
-### Credentials
+```sh
+powerpipe server
+```
 
-This mod uses the credentials configured in the [Steampipe IBM Cloud plugin](https://hub.steampipe.io/plugins/turbot/ibm).
+Browse and view your dashboards at **http://localhost:9033**.
 
-### Configuration
+## Open Source & Contributing
 
-No extra configuration is required.
+This repository is published under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0). Please see our [code of conduct](https://github.com/turbot/.github/blob/main/CODE_OF_CONDUCT.md). We look forward to collaborating with you!
 
-## Contributing
+[Steampipe](https://steampipe.io) and [Powerpipe](https://powerpipe.io) are products produced from this open source software, exclusively by [Turbot HQ, Inc](https://turbot.com). They are distributed under our commercial terms. Others are allowed to make their own distribution of the software, but cannot use any of the Turbot trademarks, cloud services, etc. You can learn more in our [Open Source FAQ](https://turbot.com/open-source).
 
-If you have an idea for additional dashboards or just want to help maintain and extend this mod ([or others](https://github.com/topics/steampipe-mod)) we would love you to join the community and start contributing.
+## Get Involved
 
-- **[Join #steampipe on Slack →](https://turbot.com/community/join)** and hang out with other Mod developers.
+**[Join #powerpipe on Slack →](https://turbot.com/community/join)**
 
-Please see the [contribution guidelines](https://github.com/turbot/steampipe/blob/main/CONTRIBUTING.md) and our [code of conduct](https://github.com/turbot/steampipe/blob/main/CODE_OF_CONDUCT.md). All contributions are subject to the [Apache 2.0 open source license](https://github.com/turbot/steampipe-mod-ibm-insights/blob/main/LICENSE).
+Want to help but don't know where to start? Pick up one of the `help wanted` issues:
 
-Want to help but not sure where to start? Pick up one of the `help wanted` issues:
-
-- [Steampipe](https://github.com/turbot/steampipe/labels/help%20wanted)
-- [IBM Cloud Insights Mod](https://github.com/turbot/steampipe-mod-ibm-insights/labels/help%20wanted)
+- [Powerpipe](https://github.com/turbot/powerpipe/labels/help%20wanted)
+- [IBM Insights Mod](https://github.com/turbot/steampipe-mod-ibm-insights/labels/help%20wanted)
