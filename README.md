@@ -1,19 +1,20 @@
 # IBM Cloud Insights Mod for Powerpipe
 
 > [!IMPORTANT]  
-> Steampipe mods are [migrating to Powerpipe format](https://powerpipe.io) to gain new features. This mod currently works with both Steampipe and Powerpipe, but will only support Powerpipe from v1.x onward.
+> [Powerpipe](https://powerpipe.io) is now the preferred way to run this mod! [Migrating from Steampipe →](https://powerpipe.io/blog/migrating-from-steampipe)
+>
+> All v0.x versions of this mod will work in both Steampipe and Powerpipe, but v1.0.0 onwards will be in Powerpipe format only.
 
 An IBM Cloud dashboarding tool that can be used to view dashboards and reports across all of your IBM Cloud accounts.
 
-<!-- ![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png) -->
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/add-new-checks/docs/images/ibm_vpc_detail.png)
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png)
 
 ## Documentation
 
 - **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/controls)**
 - **[Named queries →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/queries)**
 
-## Getting started
+## Getting Started
 
 ### Installation
 
@@ -53,7 +54,7 @@ Start the dashboard server:
 powerpipe server
 ```
 
-Browse and view your dashboards at **https://localhost:9033**.
+Browse and view your dashboards at **http://localhost:9033**.
 
 ## Open Source & Contributing
 

@@ -2,21 +2,17 @@
 
 Create dashboards and reports for your IBM Cloud resources using Powerpipe and Steampipe.
 
-<!-- <img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_compute_instance_detail.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_compute_instance_detail.png" width="50%" type="thumbnail"/>
 <img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_blockstorage_volume_detail.png" width="50%" type="thumbnail"/>
 <img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_security_group_detail.png" width="50%" type="thumbnail"/>
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png" width="50%" type="thumbnail"/> -->
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/add-new-checks/docs/images/ibm_compute_instance_detail.png" width="50%" type="thumbnail"/>
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/add-new-checks/docs/images/ibm_blockstorage_volume_detail.png" width="50%" type="thumbnail"/>
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/add-new-checks/docs/images/ibm_security_group_detail.png" width="50%" type="thumbnail"/>
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/add-new-checks/docs/images/ibm_vpc_detail.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png" width="50%" type="thumbnail"/>
 
 ## Documentation
 
 - **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/controls)**
 - **[Named queries →](https://hub.powerpipe.io/mods/turbot/ibm_compliance/queries)**
 
-## Getting started
+## Getting Started
 
 ### Installation
 
@@ -56,7 +52,7 @@ Start the dashboard server:
 powerpipe server
 ```
 
-Browse and view your dashboards at **https://localhost:9033**.
+Browse and view your dashboards at **http://localhost:9033**.
 
 ## Open Source & Contributing
 
