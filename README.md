@@ -7,7 +7,7 @@
 
 An IBM Cloud dashboarding tool that can be used to view dashboards and reports across all of your IBM Cloud accounts.
 
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_vpc_detail.png)
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-ibm-insights/main/docs/images/ibm_security_group_detail.png)
 
 ## Documentation
 
